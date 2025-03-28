@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: artemmaslii
+      changes:
+        - sqlFile:
+            path: ./db.changelog.sql
+            relativeToChangelogFile: true
+  - changeSet:
+      id: 2
+      author: artemmaslii
+      changes:
+        - sqlFile:
+            path: ./db.changelog.test.injection.sql
+            relativeToChangelogFile: true
