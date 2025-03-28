@@ -5,7 +5,7 @@ spring:
       path: /h2-console
   datasource:
     url: ${DB_URL}
-    driverClassName: org.h2.Driver
+    driverClassName: ${DB_DRIVER}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
