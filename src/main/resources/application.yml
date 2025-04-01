@@ -15,8 +15,17 @@ spring:
   liquibase:
     change-log: classpath:db/db.changelog-master.yaml
     enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI}
 
 custom:
   api:
     paths:
       v1: /api/v1
+  auth:
+    jwt:
+      secret: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}

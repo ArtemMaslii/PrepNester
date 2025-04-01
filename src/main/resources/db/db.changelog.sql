@@ -4,13 +4,33 @@
 -- User Details
 CREATE TABLE user_details
 (
-    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    full_name    VARCHAR(255)        NOT NULL,
-    email        VARCHAR(255) UNIQUE NOT NULL,
-    phone_number VARCHAR(255),
-    sex          CHAR(1) CHECK (sex IN ('F', 'M')),
-    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    full_name     VARCHAR(255)        NOT NULL,
+    email         VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255)        NOT NULL,
+    phone_number  VARCHAR(255),
+    gender        CHAR(1) CHECK (gender IN ('F', 'M', 'X')),
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Role
+CREATE TABLE role
+(
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    accessType VARCHAR(20) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- User Roles
+CREATE TABLE user_roles
+(
+    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user_details (id),
+    FOREIGN KEY (role_id) REFERENCES role (id)
 );
 
 -- User Experience
@@ -34,28 +54,6 @@ CREATE TABLE user_education
     education_degree         TEXT,
     created_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user_details (id)
-);
-
--- Auth
-CREATE TABLE auth
-(
-    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id       BIGINT       NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user_details (id)
-);
-
--- Role
-CREATE TABLE role
-(
-    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name       VARCHAR(100) NOT NULL UNIQUE,
-    user_id    BIGINT       NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user_details (id)
 );
 
