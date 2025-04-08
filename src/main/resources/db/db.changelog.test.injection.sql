@@ -1,10 +1,14 @@
---liquibase formatted sql
+--Liquibase formatted sql
 
 -- User Details
 -- changeset testdata:1
-INSERT INTO user_details (full_name, email, password_hash, phone_number, sex)
-VALUES ('Alice Johnson', 'alice@example.com', 'password_hash1', '123456789', 'F'),
-       ('Bob Smith', 'bob@example.com', 'password_hash2', '987654321', 'M');
+INSERT INTO user_details (full_name, email, password_hash, phone_number, gender)
+VALUES ('Alice Johnson', 'alice@example.com',
+        '$2a$10$.I3EBER.hGDpVDJ6ocOjF.0D1OLJqg9FvqbiQDAyEvT6TvnofMcIm', '123456789',
+        'F'),
+       //password_hash1 and password_hash2
+       ('Bob Smith', 'bob@example.com',
+        '$2a$10$o5kkXypxj7bWO31nbIG2L.UiuSbDdKY2otBS/3EfojclKeCa47zBe', '987654321', 'M');
 
 -- User Experience
 -- changeset testdata:2
@@ -20,14 +24,14 @@ VALUES (1, 'MIT', 'Computer Science'),
 
 -- Role
 -- changeset testdata:4
-INSERT INTO role (access)
+INSERT INTO role (access_type)
 VALUES ('READ_WRITE'),
        ('READ');
 
 -- User Role
 -- changeset testdata:5
-INSERT INTO user_role (user_id, role_id)
-VALUES (1, 1),
+INSERT INTO user_roles (user_id, role_id)
+VALUES (1, 2),
        (2, 2);
 
 -- Category

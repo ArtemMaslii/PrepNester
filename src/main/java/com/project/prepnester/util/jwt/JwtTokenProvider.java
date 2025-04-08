@@ -1,8 +1,8 @@
 package com.project.prepnester.util.jwt;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import javax.crypto.SecretKey;
@@ -33,7 +33,7 @@ public class JwtTokenProvider {
   }
 
   private Key key() {
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
   }
 
   public String getEmail(String token) {

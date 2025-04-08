@@ -10,10 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "role")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class Role {
 
@@ -21,7 +23,7 @@ public class Role {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "access", nullable = false, unique = true)
+  @Column(name = "access_type", nullable = false, unique = true)
   @Enumerated(EnumType.STRING)
   private AccessType accessType;
 }

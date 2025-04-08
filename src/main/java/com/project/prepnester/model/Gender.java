@@ -11,4 +11,13 @@ public enum Gender {
   PREFER_NOT_TO_SAY("X");
 
   private final String value;
+
+  public static Gender fromValue(String value) {
+    for (Gender gender : Gender.values()) {
+      if (gender.value.equalsIgnoreCase(value)) {
+        return gender;
+      }
+    }
+    throw new IllegalArgumentException("Invalid gender value: " + value);
+  }
 }
