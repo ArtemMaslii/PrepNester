@@ -37,10 +37,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(user);
   }
 
-  public PrepNesterUserDeatils registerUser(UserDetailsRequest userDetails) {
+  public UserDetailsResponse registerUser(UserDetailsRequest userDetails) {
     PrepNesterUserDeatils userToSave = prepareUserDetails(userDetails);
+    PrepNesterUserDeatils savedUser = userRepository.save(userToSave);
 
-    return userRepository.save(userToSave);
+    return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(savedUser);
   }
 
   private PrepNesterUserDeatils prepareUserDetails(UserDetailsRequest userDetails) {
@@ -49,7 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     return PrepNesterUserDeatils.builder()
         .fullName(userDetails.getFullName())
         .email(userDetails.getEmail())
-        .passwordHash(passwordEncoder.encode(userDetails.getPasswordHash()))
+        .passwordHash(passwordEncoder.encode(userDetails.getPassword()))
         .phoneNumber(userDetails.getPhoneNumber())
         .gender(userDetails.getGender())
         .role(role)

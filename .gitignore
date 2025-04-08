@@ -37,3 +37,6 @@ out/
 .vscode/
 
 .env
+
+prepnester.mv.db
+prepnester.trace.db
