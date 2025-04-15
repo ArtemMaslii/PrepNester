@@ -1,4 +1,4 @@
-package com.project.prepnester.model;
+package com.project.prepnester.model.userDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

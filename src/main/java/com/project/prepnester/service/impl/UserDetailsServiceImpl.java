@@ -2,9 +2,9 @@ package com.project.prepnester.service.impl;
 
 import com.project.prepnester.dto.request.UserDetailsRequest;
 import com.project.prepnester.dto.response.UserDetailsResponse;
-import com.project.prepnester.model.AccessType;
-import com.project.prepnester.model.PrepNesterUserDeatils;
-import com.project.prepnester.model.Role;
+import com.project.prepnester.model.userDetails.AccessType;
+import com.project.prepnester.model.userDetails.PrepNesterUserDeatils;
+import com.project.prepnester.model.userDetails.Role;
 import com.project.prepnester.repository.RoleRepository;
 import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.service.UserDetailsService;
@@ -15,8 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+
 @Service
+@Transactional
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 

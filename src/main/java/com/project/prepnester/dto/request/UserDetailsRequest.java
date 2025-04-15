@@ -1,6 +1,6 @@
 package com.project.prepnester.dto.request;
 
-import com.project.prepnester.model.Gender;
+import com.project.prepnester.model.userDetails.Gender;
 import com.project.prepnester.validation.GenderConstraint;
 import com.project.prepnester.validation.ValidEmail;
 import jakarta.validation.constraints.NotEmpty;

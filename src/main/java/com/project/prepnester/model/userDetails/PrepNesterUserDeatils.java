@@ -1,4 +1,4 @@
-package com.project.prepnester.model;
+package com.project.prepnester.model.userDetails;
 
 import com.project.prepnester.util.GenderConverter;
 import jakarta.persistence.Column;

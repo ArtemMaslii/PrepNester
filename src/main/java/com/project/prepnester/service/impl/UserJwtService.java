@@ -1,6 +1,6 @@
 package com.project.prepnester.service.impl;
 
-import com.project.prepnester.model.PrepNesterUserDeatils;
+import com.project.prepnester.model.userDetails.PrepNesterUserDeatils;
 import com.project.prepnester.repository.UserRepository;
 import java.util.Set;
 import java.util.stream.Collectors;

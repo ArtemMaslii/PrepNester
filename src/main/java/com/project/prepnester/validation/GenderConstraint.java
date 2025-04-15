@@ -1,6 +1,6 @@
 package com.project.prepnester.validation;
 
-import com.project.prepnester.model.Gender;
+import com.project.prepnester.model.userDetails.Gender;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -1,6 +1,6 @@
 package com.project.prepnester.dto.response;
 
-import com.project.prepnester.model.Gender;
+import com.project.prepnester.model.userDetails.Gender;
 import lombok.Getter;
 import lombok.Setter;
 

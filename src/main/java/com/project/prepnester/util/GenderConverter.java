@@ -1,6 +1,6 @@
 package com.project.prepnester.util;
 
-import com.project.prepnester.model.Gender;
+import com.project.prepnester.model.userDetails.Gender;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
