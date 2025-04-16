@@ -3,7 +3,7 @@ package com.project.prepnester.service.impl;
 import com.project.prepnester.dto.request.UserDetailsRequest;
 import com.project.prepnester.dto.response.UserDetailsResponse;
 import com.project.prepnester.model.userDetails.AccessType;
-import com.project.prepnester.model.userDetails.PrepNesterUserDeatils;
+import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.model.userDetails.Role;
 import com.project.prepnester.repository.RoleRepository;
 import com.project.prepnester.repository.UserRepository;
@@ -17,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@Transactional
 @AllArgsConstructor
+@Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final UserRepository userRepository;
@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Transactional(readOnly = true)
   public UserDetailsResponse getUserDetails(String email) {
-    PrepNesterUserDeatils user = userRepository.findByEmail(email).orElseThrow(
+    PrepNesterUserDetails user = userRepository.findByEmail(email).orElseThrow(
         () -> new UserDetailsNotFoundException("User with email " + email + " not found")
     );
 
@@ -39,16 +39,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   public UserDetailsResponse registerUser(UserDetailsRequest userDetails) {
-    PrepNesterUserDeatils userToSave = prepareUserDetails(userDetails);
-    PrepNesterUserDeatils savedUser = userRepository.save(userToSave);
+    if (userRepository.findByEmail(userDetails.getEmail()).isPresent()) {
+      throw new RuntimeException("User with this email already exists.");
+    }
+
+    PrepNesterUserDetails userToSave = prepareUserDetails(userDetails);
+    PrepNesterUserDetails savedUser = userRepository.save(userToSave);
 
     return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(savedUser);
   }
 
-  private PrepNesterUserDeatils prepareUserDetails(UserDetailsRequest userDetails) {
-    Role role = roleRepository.findByAccessType(AccessType.READ_WRITE);
+  private PrepNesterUserDetails prepareUserDetails(UserDetailsRequest userDetails) {
+    Role role = roleRepository.findByAccessType(AccessType.CANDIDATE);
 
-    return PrepNesterUserDeatils.builder()
+    return PrepNesterUserDetails.builder()
         .fullName(userDetails.getFullName())
         .email(userDetails.getEmail())
         .passwordHash(passwordEncoder.encode(userDetails.getPassword()))

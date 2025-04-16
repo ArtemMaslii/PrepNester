@@ -2,12 +2,14 @@ package com.project.prepnester.service.impl;
 
 import com.project.prepnester.dto.request.CreateQuestionBodyRequest;
 import com.project.prepnester.dto.request.PageInfoDto;
+import com.project.prepnester.dto.request.SubQuestionDtoRequest;
 import com.project.prepnester.dto.response.QuestionDto;
-import com.project.prepnester.model.SortBy;
+import com.project.prepnester.dto.response.SubQuestionDto;
+import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.model.content.Category;
 import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
-import com.project.prepnester.model.userDetails.PrepNesterUserDeatils;
+import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.CategoryRepository;
 import com.project.prepnester.repository.QuestionRepository;
 import com.project.prepnester.repository.SubQuestionRepository;
@@ -16,8 +18,11 @@ import com.project.prepnester.service.QuestionService;
 import com.project.prepnester.service.mapper.QuestionToQuestionDtoMapper;
 import com.project.prepnester.service.mapper.SubQuestionMapper;
 import com.project.prepnester.util.exceptions.UserDetailsNotFoundException;
-import com.project.prepnester.util.jwt.JwtTokenProvider;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -41,11 +46,10 @@ public class QuestionServiceImpl implements QuestionService {
 
   private final CategoryRepository categoryRepository;
 
-  private final JwtTokenProvider jwtTokenProvider;
-
   private final UserRepository userRepository;
 
   @Override
+  @Transactional(readOnly = true)
   public List<QuestionDto> getAllQuestions(PageInfoDto pageInfoDto, SortBy sortBy,
       Boolean isPublic) {
     Pageable pageable = PageRequest.of(
@@ -68,6 +72,28 @@ public class QuestionServiceImpl implements QuestionService {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public QuestionDto getQuestionById(UUID questionId) {
+    log.info("Fetching question with id: {}", questionId);
+
+    Question question = questionRepository.findById(questionId)
+        .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+
+    return QuestionToQuestionDtoMapper.INSTANCE.questionToQuestionDto(question);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public SubQuestionDto getSubQuestionById(UUID subQuestionId) {
+    log.info("Fetching sub-questions for question with id: {}", subQuestionId);
+
+    SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
+        .orElseThrow(() -> new IllegalArgumentException("Sub question not found"));
+
+    return SubQuestionMapper.INSTANCE.subQuestionToSubQuestionDto(subQuestion);
+  }
+
+  @Override
   public QuestionDto createQuestion(CreateQuestionBodyRequest body) {
     log.info("Creating question from body: {}", body);
 
@@ -79,7 +105,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     String email = ((User) authentication.getPrincipal()).getUsername();
 
-    PrepNesterUserDeatils user = userRepository.findByEmail(email)
+    PrepNesterUserDetails user = userRepository.findByEmail(email)
         .orElseThrow(
             () -> new UserDetailsNotFoundException("User with email " + email + " not found"));
 
@@ -93,6 +119,7 @@ public class QuestionServiceImpl implements QuestionService {
         .category(category)
         .createdBy(user.getId())
         .updatedBy(user.getId())
+        .createdAt(LocalDateTime.now())
         .build();
 
     question = questionRepository.save(question);
@@ -104,6 +131,7 @@ public class QuestionServiceImpl implements QuestionService {
           .peek(sub -> sub.setParentQuestion(finalQuestion))
           .peek(sub -> sub.setCreatedBy(user.getId()))
           .peek(sub -> sub.setUpdatedBy(user.getId()))
+          .peek(sub -> sub.setCreatedAt(finalQuestion.getCreatedAt()))
           .toList();
 
       subQuestionRepository.saveAll(subQuestions);
@@ -112,6 +140,70 @@ public class QuestionServiceImpl implements QuestionService {
 
     return QuestionToQuestionDtoMapper.INSTANCE.questionToQuestionDto(
         question);
+  }
+
+  @Override
+  public QuestionDto updateQuestion(UUID questionId, CreateQuestionBodyRequest body) {
+    log.info("Updating question with id: {} from body: {}", questionId, body);
+
+    Question question = questionRepository.findById(questionId)
+        .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+
+    question.setTitle(body.getTitle());
+    question.setIsPublic(body.getIsPublic());
+    question.setUpdatedAt(LocalDateTime.now());
+
+    if (body.getSubQuestions() != null) {
+      Map<UUID, SubQuestion> existingMap = question.getSubQuestions().stream()
+          .collect(Collectors.toMap(SubQuestion::getId, sub -> sub));
+
+      for (SubQuestionDto subDto : body.getSubQuestions()) {
+        if (subDto.getId() != null && existingMap.containsKey(subDto.getId())) {
+          SubQuestion existing = existingMap.get(subDto.getId());
+          existing.setTitle(subDto.getTitle());
+        }
+      }
+
+      subQuestionRepository.saveAll(existingMap.values());
+    }
+
+    return QuestionToQuestionDtoMapper.INSTANCE.questionToQuestionDto(
+        questionRepository.save(question)
+    );
+  }
+
+  @Override
+  public SubQuestionDto updateSubQuestion(UUID subQuestionId, SubQuestionDtoRequest request) {
+    log.info("Updating question with id: {} and title: {}", subQuestionId, request);
+
+    SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
+        .orElseThrow(() -> new IllegalArgumentException("Sub-question not found"));
+
+    subQuestion.setTitle(request.getTitle());
+    subQuestion.setUpdatedAt(LocalDateTime.now());
+
+    subQuestion = subQuestionRepository.save(subQuestion);
+    return SubQuestionMapper.INSTANCE.subQuestionToSubQuestionDto(subQuestion);
+  }
+
+  @Override
+  public void deleteQuestion(UUID questionId) {
+    log.info("Deleting question with id: {}", questionId);
+
+    Question question = questionRepository.findById(questionId)
+        .orElseThrow(() -> new IllegalArgumentException("Question not found"));
+
+    questionRepository.delete(question);
+  }
+
+  @Override
+  public void deleteSubQuestion(UUID subQuestionId) {
+    log.info("Deleting sub-question with id: {}", subQuestionId);
+
+    SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
+        .orElseThrow(() -> new IllegalArgumentException("Sub-question not found"));
+
+    subQuestionRepository.delete(subQuestion);
   }
 
   private Sort getSort(SortBy sortBy) {

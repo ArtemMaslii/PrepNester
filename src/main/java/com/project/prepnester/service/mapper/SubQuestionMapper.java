@@ -12,9 +12,9 @@ public interface SubQuestionMapper {
   SubQuestionMapper INSTANCE = Mappers.getMapper(
       SubQuestionMapper.class);
 
-  @Mapping(source = "title", target = "title")
+  @Mapping(source = "id", target = "id")
   SubQuestionDto subQuestionToSubQuestionDto(SubQuestion subQuestion);
 
-  @Mapping(source = "title", target = "title")
+  @Mapping(source = "id", target = "id")
   SubQuestion subQuestionDtoToSubQuestion(SubQuestionDto subQuestionDto);
 }

@@ -1,6 +1,6 @@
 package com.project.prepnester.service.impl;
 
-import com.project.prepnester.model.userDetails.PrepNesterUserDeatils;
+import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.UserRepository;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class UserJwtService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) {
-    PrepNesterUserDeatils user = userRepository.findByEmail(email)
+    PrepNesterUserDetails user = userRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
     Set<GrantedAuthority> authorities = Stream.of(user.getRole())

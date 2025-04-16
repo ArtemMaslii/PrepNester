@@ -6,8 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum AccessType {
-  READ_WRITE("READ_WRITE"),
-  READ("READ");
+  GUEST("GUEST"),
+  CANDIDATE("CANDIDATE"),
+  ADMIN("ADMIN");
 
   private final String value;
 }

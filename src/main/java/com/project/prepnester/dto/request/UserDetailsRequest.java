@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class UserDetailsRequest {
 
   @NotNull(message = "Full name cannot be null")
@@ -32,7 +34,4 @@ public class UserDetailsRequest {
   @NotNull(message = "Gender cannot be null")
   @GenderConstraint
   private Gender gender;
-
-  public UserDetailsRequest() {
-  }
 }
