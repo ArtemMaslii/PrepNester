@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("${custom.api.paths.v1}/questions")
 @Slf4j
 @Validated
-public class QuestionControllers {
+public class QuestionController {
 
   private final QuestionService questionService;
 

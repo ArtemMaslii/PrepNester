@@ -9,7 +9,7 @@ import com.project.prepnester.repository.RoleRepository;
 import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.service.UserDetailsService;
 import com.project.prepnester.service.mapper.UserToUserDetailsResponseMapper;
-import com.project.prepnester.util.exceptions.UserDetailsNotFoundException;
+import com.project.prepnester.util.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Transactional(readOnly = true)
   public UserDetailsResponse getUserDetails(String email) {
     PrepNesterUserDetails user = userRepository.findByEmail(email).orElseThrow(
-        () -> new UserDetailsNotFoundException("User with email " + email + " not found")
+        () -> new NotFoundException("User with email " + email + " not found")
     );
 
     return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(user);

@@ -129,10 +129,14 @@ VALUES ('a03526e9-dcfe-45db-9749-7d5a8310c906', 'f8bff2a2-e87f-4f07-8b70-7cf9780
         'Indeed, AVL trees maintain a balance factor.',
         'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
 
--- Questions Cheat Sheets
--- changeset testdata:16
-INSERT INTO questions_cheat_sheets (question_id, cheat_sheet_id)
-VALUES ('784bfa2b-6fc4-4288-a8ae-0579c4cc0b18',
+INSERT INTO categories_cheat_sheets (category_id, cheat_sheet_id)
+VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
         'f03236c3-5746-4d2b-9c97-6b93c340e79f'),
-       ('9345ef2f-cd8f-4eae-97cc-6f4e81ed995d',
+       ('e36fdba0-f12d-4a51-83a9-60e37452a831',
         'cfdb8f27-94a2-4cfc-8c8f-e5404db96869');
+
+INSERT INTO categories_questions (category_id, question_id)
+VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
+        '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18'),
+       ('e36fdba0-f12d-4a51-83a9-60e37452a831',
+        '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d');

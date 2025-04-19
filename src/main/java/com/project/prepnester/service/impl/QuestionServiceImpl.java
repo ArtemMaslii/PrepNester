@@ -17,7 +17,8 @@ import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.service.QuestionService;
 import com.project.prepnester.service.mapper.QuestionToQuestionDtoMapper;
 import com.project.prepnester.service.mapper.SubQuestionMapper;
-import com.project.prepnester.util.exceptions.UserDetailsNotFoundException;
+import com.project.prepnester.util.exceptions.NoPermissionException;
+import com.project.prepnester.util.exceptions.NotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -97,18 +98,6 @@ public class QuestionServiceImpl implements QuestionService {
   public QuestionDto createQuestion(CreateQuestionBodyRequest body) {
     log.info("Creating question from body: {}", body);
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    if (authentication == null || !authentication.isAuthenticated()) {
-      throw new IllegalArgumentException("User not authenticated");
-    }
-
-    String email = ((User) authentication.getPrincipal()).getUsername();
-
-    PrepNesterUserDetails user = userRepository.findByEmail(email)
-        .orElseThrow(
-            () -> new UserDetailsNotFoundException("User with email " + email + " not found"));
-
     Category category = categoryRepository.findByTitle(
             body.getCategory().getTitle())
         .orElseThrow(() -> new IllegalArgumentException("Category not found"));
@@ -117,8 +106,8 @@ public class QuestionServiceImpl implements QuestionService {
         .title(body.getTitle())
         .isPublic(body.getIsPublic())
         .category(category)
-        .createdBy(user.getId())
-        .updatedBy(user.getId())
+        .createdBy(body.getCreatedBy())
+        .updatedBy(body.getCreatedBy())
         .createdAt(LocalDateTime.now())
         .build();
 
@@ -129,8 +118,8 @@ public class QuestionServiceImpl implements QuestionService {
       List<SubQuestion> subQuestions = body.getSubQuestions().stream()
           .map(SubQuestionMapper.INSTANCE::subQuestionDtoToSubQuestion)
           .peek(sub -> sub.setParentQuestion(finalQuestion))
-          .peek(sub -> sub.setCreatedBy(user.getId()))
-          .peek(sub -> sub.setUpdatedBy(user.getId()))
+          .peek(sub -> sub.setCreatedBy(body.getCreatedBy()))
+          .peek(sub -> sub.setUpdatedBy(body.getCreatedBy()))
           .peek(sub -> sub.setCreatedAt(finalQuestion.getCreatedAt()))
           .toList();
 
@@ -145,6 +134,10 @@ public class QuestionServiceImpl implements QuestionService {
   @Override
   public QuestionDto updateQuestion(UUID questionId, CreateQuestionBodyRequest body) {
     log.info("Updating question with id: {} from body: {}", questionId, body);
+
+    if (!getCurrentUserId().equals(body.getCreatedBy())) {
+      throw new NoPermissionException("User doesn't have permission to update this question");
+    }
 
     Question question = questionRepository.findById(questionId)
         .orElseThrow(() -> new IllegalArgumentException("Question not found"));
@@ -193,6 +186,10 @@ public class QuestionServiceImpl implements QuestionService {
     Question question = questionRepository.findById(questionId)
         .orElseThrow(() -> new IllegalArgumentException("Question not found"));
 
+    if (!getCurrentUserId().equals(question.getCreatedBy())) {
+      throw new NoPermissionException("User doesn't have permission to update this question");
+    }
+
     questionRepository.delete(question);
   }
 
@@ -202,6 +199,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
         .orElseThrow(() -> new IllegalArgumentException("Sub-question not found"));
+
+    if (!getCurrentUserId().equals(subQuestion.getCreatedBy())) {
+      throw new NoPermissionException("User doesn't have permission to update this question");
+    }
 
     subQuestionRepository.delete(subQuestion);
   }
@@ -215,5 +216,20 @@ public class QuestionServiceImpl implements QuestionService {
       case MOST_LIKED -> Sort.unsorted();
       case MOST_COMMENTED -> Sort.unsorted();
     };
+  }
+
+  private UUID getCurrentUserId() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new IllegalArgumentException("User not authenticated");
+    }
+
+    String email = ((User) authentication.getPrincipal()).getUsername();
+
+    PrepNesterUserDetails user = userRepository.findByEmail(email)
+        .orElseThrow(
+            () -> new NotFoundException("User with email " + email + " not found"));
+
+    return user.getId();
   }
 }

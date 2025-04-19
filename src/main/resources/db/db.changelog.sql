@@ -190,16 +190,6 @@ CREATE TABLE comment_replies
     FOREIGN KEY (comment_id) REFERENCES comment (id)
 );
 
--- Many-to-Many: Questions & Cheat Sheets
-CREATE TABLE questions_cheat_sheets
-(
-    question_id    UUID NOT NULL,
-    cheat_sheet_id UUID NOT NULL,
-    PRIMARY KEY (question_id, cheat_sheet_id),
-    FOREIGN KEY (question_id) REFERENCES question (id),
-    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
-);
-
 -- Many-to-Many: Categories & Cheat Sheets
 CREATE TABLE categories_cheat_sheets
 (
@@ -211,7 +201,7 @@ CREATE TABLE categories_cheat_sheets
 );
 
 -- Many-to-Many: Questions & Categories
-CREATE TABLE questions_categories
+CREATE TABLE categories_questions
 (
     question_id UUID NOT NULL,
     category_id UUID NOT NULL,
