@@ -8,23 +8,29 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
 @Builder
-public class CheatSheetDto {
+public class QuestionDetailsDto {
 
   private UUID id;
 
   private String title;
 
-  private List<CategoryWithQuestionsDto> categories;
+  private Boolean isPublic;
+
+  private CategoryDto category;
+
+  private List<SubQuestionWithoutCommentsDto> subQuestions;
+
+  private List<CommentDto> comments;
 
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
 
-  private UUID createdBy;
+  private String createdByName;
 
-  private UUID updatedBy;
+  private String updatedByName;
 }

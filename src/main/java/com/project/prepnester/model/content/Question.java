@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -42,7 +43,7 @@ public class Question {
 
   @OneToMany(mappedBy = "parentQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
-  private List<SubQuestion> subQuestions;
+  private List<SubQuestion> subQuestions = new ArrayList<>();
 
   @Column(name = "created_by")
   private UUID createdBy;

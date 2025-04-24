@@ -1,4 +1,4 @@
-package com.project.prepnester.service.impl;
+package com.project.prepnester.service;
 
 import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.UserRepository;

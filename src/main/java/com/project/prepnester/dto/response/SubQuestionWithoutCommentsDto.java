@@ -1,30 +1,26 @@
 package com.project.prepnester.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @Builder
-public class CheatSheetDto {
+@AllArgsConstructor
+public class SubQuestionWithoutCommentsDto {
 
   private UUID id;
 
   private String title;
 
-  private List<CategoryWithQuestionsDto> categories;
-
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
 
-  private UUID createdBy;
-
-  private UUID updatedBy;
 }

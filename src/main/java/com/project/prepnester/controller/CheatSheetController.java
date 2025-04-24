@@ -1,12 +1,19 @@
 package com.project.prepnester.controller;
 
+import com.project.prepnester.dto.request.CheatSheetRequestDto;
 import com.project.prepnester.dto.response.CheatSheetDto;
 import com.project.prepnester.service.CheatSheetService;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +32,26 @@ public class CheatSheetController {
   @GetMapping("/{id}")
   public CheatSheetDto getCheatSheetById(@PathVariable UUID id) {
     return cheatSheetService.getCheatSheetById(id);
+  }
+
+  @PostMapping
+  public ResponseEntity<CheatSheetDto> createCheatSheet(
+      @RequestBody CheatSheetRequestDto cheatSheetRequestDto) {
+    CheatSheetDto cheatSheetDto = cheatSheetService.createCheatSheet(cheatSheetRequestDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(cheatSheetDto);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<CheatSheetDto> updateCheatSheet(
+      @PathVariable UUID id,
+      @RequestBody CheatSheetRequestDto cheatSheetRequestDto) {
+    CheatSheetDto cheatSheetDto = cheatSheetService.updateCheatSheet(id, cheatSheetRequestDto);
+    return ResponseEntity.ok(cheatSheetDto);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteCheatSheet(@PathVariable UUID id) {
+    cheatSheetService.deleteCheatSheet(id);
+    return ResponseEntity.noContent().build();
   }
 }

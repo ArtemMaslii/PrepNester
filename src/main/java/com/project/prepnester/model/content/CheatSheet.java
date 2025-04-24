@@ -39,6 +39,14 @@ public class CheatSheet {
   )
   private List<Category> categories;
 
+  @ManyToMany
+  @JoinTable(
+      name = "questions_cheat_sheets",
+      joinColumns = @JoinColumn(name = "cheat_sheet_id"),
+      inverseJoinColumns = @JoinColumn(name = "question_id")
+  )
+  private List<Question> questions;
+
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 

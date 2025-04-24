@@ -163,31 +163,20 @@ CREATE TABLE cheat_sheet_likes
 -- Comment
 CREATE TABLE comment
 (
-    id          UUID PRIMARY KEY,
-    question_id UUID NOT NULL,
-    message     TEXT NOT NULL,
-    created_by  UUID NOT NULL,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_by  UUID,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id              UUID PRIMARY KEY,
+    question_id     UUID,
+    sub_question_id UUID,
+    parent_id       UUID,
+    message         TEXT NOT NULL,
+    created_by      UUID NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by      UUID,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES user_details (id),
     FOREIGN KEY (updated_by) REFERENCES user_details (id),
-    FOREIGN KEY (question_id) REFERENCES question (id)
-);
-
--- Comment Replies
-CREATE TABLE comment_replies
-(
-    id            UUID PRIMARY KEY,
-    comment_id    UUID NOT NULL,
-    reply_message TEXT NOT NULL,
-    created_by    UUID NOT NULL,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_by    UUID,
-    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES user_details (id),
-    FOREIGN KEY (updated_by) REFERENCES user_details (id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id)
+    FOREIGN KEY (question_id) REFERENCES question (id),
+    FOREIGN KEY (sub_question_id) REFERENCES sub_questions (id),
+    FOREIGN KEY (parent_id) REFERENCES comment (id)
 );
 
 -- Many-to-Many: Categories & Cheat Sheets
@@ -197,6 +186,16 @@ CREATE TABLE categories_cheat_sheets
     cheat_sheet_id UUID NOT NULL,
     PRIMARY KEY (category_id, cheat_sheet_id),
     FOREIGN KEY (category_id) REFERENCES category (id),
+    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
+);
+
+-- Many-to-Many: Questions & Cheat Sheets
+CREATE TABLE questions_cheat_sheets
+(
+    question_id    UUID NOT NULL,
+    cheat_sheet_id UUID NOT NULL,
+    PRIMARY KEY (question_id, cheat_sheet_id),
+    FOREIGN KEY (question_id) REFERENCES question (id),
     FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
 );
 

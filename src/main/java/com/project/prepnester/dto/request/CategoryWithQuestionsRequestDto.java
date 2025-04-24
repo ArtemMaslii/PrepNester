@@ -1,4 +1,4 @@
-package com.project.prepnester.dto.response;
+package com.project.prepnester.dto.request;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CategoryWithQuestionsDto {
+public class CategoryWithQuestionsRequestDto {
 
   private UUID id;
 
-  private String title;
-
-  private List<QuestionWithoutCategoryDto> questions;
+  private List<QuestionIdsRequestDto> questions;
 }

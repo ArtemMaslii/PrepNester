@@ -2,7 +2,7 @@ package com.project.prepnester.controller;
 
 import com.project.prepnester.dto.request.UserDetailsRequest;
 import com.project.prepnester.dto.response.UserDetailsResponse;
-import com.project.prepnester.service.impl.UserDetailsServiceImpl;
+import com.project.prepnester.service.UserDetailsService;
 import com.project.prepnester.validation.ValidEmail;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class UserController {
 
-  private final UserDetailsServiceImpl userDetailsServiceImpl;
+  private final UserDetailsService userDetailsService;
 
   @GetMapping
   public ResponseEntity<UserDetailsResponse> getUserDetails(
       @RequestParam @ValidEmail String email) {
-    return ResponseEntity.ok(userDetailsServiceImpl.getUserDetails(email));
+    return ResponseEntity.ok(userDetailsService.getUserDetails(email));
   }
 
   @PostMapping("/register")
   public ResponseEntity<UserDetailsResponse> registerUser(
       @RequestBody @Valid UserDetailsRequest userDetails) {
-    return ResponseEntity.ok(userDetailsServiceImpl.registerUser(userDetails));
+    return ResponseEntity.ok(userDetailsService.registerUser(userDetails));
   }
 }

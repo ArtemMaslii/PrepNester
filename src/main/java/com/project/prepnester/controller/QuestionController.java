@@ -1,12 +1,21 @@
 package com.project.prepnester.controller;
 
+import com.project.prepnester.dto.request.CommentRequestDto;
+import com.project.prepnester.dto.request.CommentUpdateRequestDto;
 import com.project.prepnester.dto.request.CreateQuestionBodyRequest;
 import com.project.prepnester.dto.request.PageInfoDto;
 import com.project.prepnester.dto.request.SubQuestionDtoRequest;
+import com.project.prepnester.dto.request.UpdateQuestionBodyRequest;
+import com.project.prepnester.dto.response.CommentQuestionDto;
+import com.project.prepnester.dto.response.CommentSubQuestionDto;
+import com.project.prepnester.dto.response.QuestionDetailsDto;
 import com.project.prepnester.dto.response.QuestionDto;
 import com.project.prepnester.dto.response.SubQuestionDto;
+import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.common.SortBy;
+import com.project.prepnester.service.CommentService;
 import com.project.prepnester.service.QuestionService;
+import com.project.prepnester.service.SubQuestionService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +42,10 @@ public class QuestionController {
 
   private final QuestionService questionService;
 
+  private final SubQuestionService subQuestionService;
+
+  private final CommentService commentService;
+
   @GetMapping
   public List<QuestionDto> getAllQuestions(
       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -48,9 +61,9 @@ public class QuestionController {
   }
 
   @GetMapping("/{questionId}")
-  public ResponseEntity<QuestionDto> getQuestionById(@PathVariable UUID questionId) {
+  public ResponseEntity<QuestionDetailsDto> getQuestionById(@PathVariable UUID questionId) {
 
-    QuestionDto question = questionService.getQuestionById(questionId);
+    QuestionDetailsDto question = questionService.getQuestionById(questionId);
     return ResponseEntity.ok(question);
   }
 
@@ -58,7 +71,7 @@ public class QuestionController {
   public ResponseEntity<SubQuestionDto> getSubQuestionsByQuestionId(
       @PathVariable UUID subQuestionId) {
 
-    SubQuestionDto subQuestion = questionService.getSubQuestionById(subQuestionId);
+    SubQuestionDto subQuestion = subQuestionService.getSubQuestionById(subQuestionId);
     return ResponseEntity.ok(subQuestion);
   }
 
@@ -71,17 +84,19 @@ public class QuestionController {
 
   @PutMapping("/{questionId}")
   public ResponseEntity<QuestionDto> updateQuestion(@PathVariable UUID questionId,
-      @RequestBody @Valid CreateQuestionBodyRequest body) {
+      @RequestBody @Valid UpdateQuestionBodyRequest body) {
 
     QuestionDto updatedQuestion = questionService.updateQuestion(questionId, body);
     return ResponseEntity.ok(updatedQuestion);
   }
 
   @PutMapping("/sub-questions/{subQuestionId}")
-  public ResponseEntity<SubQuestionDto> updateSubQuestion(@PathVariable UUID subQuestionId,
+  public ResponseEntity<SubQuestionWithoutCommentsDto> updateSubQuestion(
+      @PathVariable UUID subQuestionId,
       @RequestBody SubQuestionDtoRequest subQuestionDtoRequest) {
 
-    SubQuestionDto updatedSubQuestion = questionService.updateSubQuestion(subQuestionId,
+    SubQuestionWithoutCommentsDto updatedSubQuestion = subQuestionService.updateSubQuestion(
+        subQuestionId,
         subQuestionDtoRequest);
     return ResponseEntity.ok(updatedSubQuestion);
   }
@@ -95,7 +110,45 @@ public class QuestionController {
 
   @DeleteMapping("/sub-questions/{subQuestionId}")
   public ResponseEntity<Void> deleteSubQuestion(@PathVariable UUID subQuestionId) {
-    questionService.deleteSubQuestion(subQuestionId);
+    subQuestionService.deleteSubQuestion(subQuestionId);
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/sub-questions/{subQuestionId}/comments")
+  public ResponseEntity<CommentSubQuestionDto> createComment(@PathVariable UUID subQuestionId,
+      @RequestBody @Valid CommentRequestDto commentRequestDto) {
+    CommentSubQuestionDto response = commentService.createSubQuestionComment(subQuestionId,
+        commentRequestDto);
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/{questionId}/comments")
+  public ResponseEntity<CommentQuestionDto> createCommentToQuestion(@PathVariable UUID questionId,
+      @RequestBody @Valid CommentRequestDto commentRequestDto) {
+    CommentQuestionDto response = commentService.createQuestionComment(questionId,
+        commentRequestDto);
+    return ResponseEntity.ok(response);
+  }
+
+  @PutMapping("/sub-questions/comments/{commentId}")
+  public ResponseEntity<CommentSubQuestionDto> updateComment(@PathVariable UUID commentId,
+      @RequestBody @Valid CommentUpdateRequestDto commentRequestDto) {
+    CommentSubQuestionDto response = commentService.updateSubQuestionComment(commentId,
+        commentRequestDto);
+    return ResponseEntity.ok(response);
+  }
+
+  @PutMapping("/comments/{commentId}")
+  public ResponseEntity<CommentQuestionDto> updateCommentToQuestion(@PathVariable UUID commentId,
+      @RequestBody @Valid CommentUpdateRequestDto commentRequestDto) {
+    CommentQuestionDto response = commentService.updateQuestionComment(commentId,
+        commentRequestDto);
+    return ResponseEntity.ok(response);
+  }
+
+  @DeleteMapping("/comments/{commentId}")
+  public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId) {
+    commentService.deleteComment(commentId);
     return ResponseEntity.noContent().build();
   }
 }

@@ -4,27 +4,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
-public class CheatSheetDto {
+public class QuestionWithoutCategoryDto {
 
   private UUID id;
 
   private String title;
 
-  private List<CategoryWithQuestionsDto> categories;
+  private Boolean isPublic;
+
+  private List<SubQuestionWithoutCommentsDto> subQuestions;
 
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
-
-  private UUID createdBy;
-
-  private UUID updatedBy;
 }

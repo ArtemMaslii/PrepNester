@@ -1,6 +1,5 @@
 package com.project.prepnester.dto.request;
 
-import com.project.prepnester.dto.response.CategoryWithQuestionsDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,5 @@ public class CheatSheetRequestDto {
 
   private String title;
 
-  private List<CategoryWithQuestionsDto> categories;
-
-  private String createdAt;
+  private List<CategoryWithQuestionsRequestDto> categories;
 }

@@ -1,7 +1,6 @@
 package com.project.prepnester.model.content;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,38 +21,47 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "sub_questions")
+@Table(name = "comment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubQuestion {
+public class Comment {
 
   @Id
   @GeneratedValue(generator = "UUID")
   private UUID id;
 
-  @Column(nullable = false)
-  private String title;
+  @Column(name = "message", nullable = false)
+  private String message;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "parent_question_id", nullable = false)
-  @JsonBackReference
-  private Question parentQuestion;
+  @ManyToOne
+  @JoinColumn(name = "question_id")
+  @JsonIgnore
+  private Question question;
 
-  @OneToMany(mappedBy = "subQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonManagedReference
-  private List<Comment> comments = new ArrayList<>();
-
-  @Column(name = "created_by")
-  private UUID createdBy;
-
-  @Column(name = "updated_by")
-  private UUID updatedBy;
+  @ManyToOne
+  @JoinColumn(name = "sub_question_id")
+  @JsonIgnore
+  private SubQuestion subQuestion;
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
+
+  @JoinColumn(name = "created_by", nullable = false)
+  private UUID createdBy;
+
+  @JoinColumn(name = "updated_by")
+  private UUID updatedBy;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_id")
+  @JsonIgnore
+  private Comment parent;
+
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> replies = new ArrayList<>();
 }

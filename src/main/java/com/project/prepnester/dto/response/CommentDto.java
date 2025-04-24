@@ -12,13 +12,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CheatSheetDto {
+public class CommentDto {
 
   private UUID id;
 
-  private String title;
+  private String message;
 
-  private List<CategoryWithQuestionsDto> categories;
+  private UUID questionId;
+
+  private UUID subQuestionId;
 
   private LocalDateTime createdAt;
 
@@ -27,4 +29,6 @@ public class CheatSheetDto {
   private UUID createdBy;
 
   private UUID updatedBy;
+
+  private List<CommentReplyDto> replies;
 }

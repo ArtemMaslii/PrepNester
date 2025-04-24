@@ -51,6 +51,8 @@ INSERT INTO question (id, title, is_public, category_id, created_by)
 VALUES ('784bfa2b-6fc4-4288-a8ae-0579c4cc0b18', 'What is QuickSort?', TRUE,
         '1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
         'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
+       ('784bfa2b-6fc4-4288-a8ae-0579c4cc0b17', 'How does OpenSearch Works', TRUE,
+        '1e52f3b1-b2cf-470d-8338-bdbba6988e7b', 'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
        ('9345ef2f-cd8f-4eae-97cc-6f4e81ed995d', 'Explain Binary Trees', TRUE,
         'e36fdba0-f12d-4a51-83a9-60e37452a831',
         'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
@@ -111,23 +113,18 @@ VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423',
 
 -- Comment
 -- changeset testdata:14
-INSERT INTO comment (id, question_id, message, created_by)
-VALUES ('f8bff2a2-e87f-4f07-8b70-7cf9780b7e9f', '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18',
-        'QuickSort is an efficient sorting algorithm.',
+INSERT INTO comment (id, question_id, sub_question_id, message, parent_id, created_by)
+VALUES ('f8bff2a2-e87f-4f07-8b70-7cf9780b7e9f', '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18', null,
+        'QuickSort is an efficient sorting algorithm.', null,
         'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72'),
-       ('e4f1ff79-4a6b-4fba-9c27-b77200d1e0cd', '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d',
-        'AVL Trees are a self-balancing binary search tree.',
-        'a1f42067-8f71-4be1-bc9d-95adf4f5c423');
-
--- Comment Replies
--- changeset testdata:15
-INSERT INTO comment_replies (id, comment_id, reply_message, created_by)
-VALUES ('a03526e9-dcfe-45db-9749-7d5a8310c906', 'f8bff2a2-e87f-4f07-8b70-7cf9780b7e9f',
-        'Yes, it is commonly used for large datasets.',
+       ('f8bff2a2-e87f-4f07-8b70-7cf9780b7e91', null, 'f5d1b9fe-2b50-4b5c-befb-7b4f82fa1b5e',
+        'Yeap!', null, 'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
+       ('a03526e9-dcfe-45db-9749-7d5a8310c906', '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18', null,
+        'Yes, it is commonly used for large datasets.', 'f8bff2a2-e87f-4f07-8b70-7cf9780b7e9f',
         'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
-       ('1c34e5f6-e10d-4d6b-8d95-116cc9bb5cc6', 'e4f1ff79-4a6b-4fba-9c27-b77200d1e0cd',
-        'Indeed, AVL trees maintain a balance factor.',
-        'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
+       ('e4f1ff79-4a6b-4fba-9c27-b77200d1e0cd', '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d', null,
+        'AVL Trees are a self-balancing binary search tree.', null,
+        'a1f42067-8f71-4be1-bc9d-95adf4f5c423');
 
 INSERT INTO categories_cheat_sheets (category_id, cheat_sheet_id)
 VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
@@ -135,8 +132,13 @@ VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
        ('e36fdba0-f12d-4a51-83a9-60e37452a831',
         'cfdb8f27-94a2-4cfc-8c8f-e5404db96869');
 
+INSERT INTO questions_cheat_sheets (question_id, cheat_sheet_id)
+VALUES ('784bfa2b-6fc4-4288-a8ae-0579c4cc0b18', 'f03236c3-5746-4d2b-9c97-6b93c340e79f'),
+       ('9345ef2f-cd8f-4eae-97cc-6f4e81ed995d', 'cfdb8f27-94a2-4cfc-8c8f-e5404db96869');
+
 INSERT INTO categories_questions (category_id, question_id)
 VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
         '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18'),
+       ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b', '784bfa2b-6fc4-4288-a8ae-0579c4cc0b17'),
        ('e36fdba0-f12d-4a51-83a9-60e37452a831',
         '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d');

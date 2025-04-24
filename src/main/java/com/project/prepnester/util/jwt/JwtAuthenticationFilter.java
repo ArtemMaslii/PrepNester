@@ -1,6 +1,6 @@
 package com.project.prepnester.util.jwt;
 
-import com.project.prepnester.service.impl.UserJwtService;
+import com.project.prepnester.service.UserJwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
