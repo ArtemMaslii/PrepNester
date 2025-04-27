@@ -8,6 +8,7 @@ import com.project.prepnester.dto.response.SubQuestionDto;
 import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.content.SubQuestion;
 import com.project.prepnester.repository.CommentRepository;
+import com.project.prepnester.repository.LikeRepository;
 import com.project.prepnester.repository.SubQuestionRepository;
 import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.util.exceptions.NoPermissionException;
@@ -33,6 +34,8 @@ public class SubQuestionService {
 
   private final CommentRepository commentRepository;
 
+  private final LikeRepository likeRepository;
+
   @Transactional(readOnly = true)
   public SubQuestionDto getSubQuestionById(UUID subQuestionId) {
     log.info("Fetching sub-questions for question with id: {}", subQuestionId);
@@ -57,7 +60,9 @@ public class SubQuestionService {
     }
 
     return mapSubQuestionToDto(subQuestion, createdBy, updatedBy,
-        commentRepository.findAllBySubQuestionId(subQuestionId));
+        commentRepository.findAllBySubQuestionId(subQuestionId),
+        likeRepository.findAllBySubQuestionId(
+            subQuestionId));
   }
 
   public SubQuestionWithoutCommentsDto updateSubQuestion(UUID subQuestionId,

@@ -45,6 +45,10 @@ public class SubQuestion {
   @JsonManagedReference
   private List<Comment> comments = new ArrayList<>();
 
+  @OneToMany(mappedBy = "subQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private List<Like> likes = new ArrayList<>();
+
   @Column(name = "created_by")
   private UUID createdBy;
 

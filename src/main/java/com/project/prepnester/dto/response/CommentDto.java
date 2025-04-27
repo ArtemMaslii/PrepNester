@@ -22,6 +22,8 @@ public class CommentDto {
 
   private UUID subQuestionId;
 
+  private Long likesCount = 0L;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

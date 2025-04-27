@@ -10,6 +10,7 @@ import com.project.prepnester.dto.response.QuestionDto;
 import com.project.prepnester.dto.response.SubQuestionDto;
 import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.content.Comment;
+import com.project.prepnester.model.content.Like;
 import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
 import java.time.LocalDateTime;
@@ -17,7 +18,8 @@ import java.util.List;
 
 public class QuestionMapper {
 
-  public static QuestionDto mapQuestionToDto(Question question, List<Comment> comments) {
+  public static QuestionDto mapQuestionToDto(Question question, List<Comment> comments,
+      List<Like> likes) {
     return QuestionDto.builder()
         .id(question.getId())
         .title(question.getTitle())
@@ -28,6 +30,7 @@ public class QuestionMapper {
             .map(QuestionMapper::mapSubQuestionToDtoWithoutComments)
             .toList())
         .commentsCount((long) comments.size())
+        .likesCount((long) likes.size())
         .createdAt(question.getCreatedAt())
         .updatedAt(question.getUpdatedAt())
         .build();
@@ -54,6 +57,7 @@ public class QuestionMapper {
                     .questionId(comment.getQuestion() != null
                         ? comment.getQuestion().getId()
                         : null)
+                    .likesCount((long) comment.getLikes().size())
                     .createdAt(comment.getCreatedAt())
                     .createdBy(comment.getCreatedBy())
                     .updatedAt(comment.getUpdatedAt())
@@ -70,6 +74,7 @@ public class QuestionMapper {
                                 .parentId(reply.getParent() != null
                                     ? reply.getParent().getId()
                                     : null)
+                                .likesCount((long) reply.getLikes().size())
                                 .createdAt(reply.getCreatedAt())
                                 .createdBy(reply.getCreatedBy())
                                 .updatedAt(reply.getUpdatedAt())
@@ -91,7 +96,7 @@ public class QuestionMapper {
   }
 
   public static SubQuestionDto mapSubQuestionToDto(SubQuestion subQuestion, String createdBy,
-      String updatedBy, List<Comment> comments) {
+      String updatedBy, List<Comment> comments, List<Like> likes) {
     return SubQuestionDto.builder()
         .id(subQuestion.getId())
         .title(subQuestion.getTitle())
@@ -103,6 +108,7 @@ public class QuestionMapper {
                     .subQuestionId(comment.getSubQuestion() != null
                         ? comment.getSubQuestion().getId()
                         : null)
+                    .likesCount((long) comment.getLikes().size())
                     .createdAt(comment.getCreatedAt())
                     .createdBy(comment.getCreatedBy())
                     .updatedAt(comment.getUpdatedAt())
@@ -119,6 +125,7 @@ public class QuestionMapper {
                                 .parentId(reply.getParent() != null
                                     ? reply.getParent().getId()
                                     : null)
+                                .likesCount((long) reply.getLikes().size())
                                 .createdAt(reply.getCreatedAt())
                                 .createdBy(reply.getCreatedBy())
                                 .updatedAt(reply.getUpdatedAt())
@@ -131,6 +138,7 @@ public class QuestionMapper {
                     )
                     .build())
                 .toList())
+        .likesCount((long) likes.size())
         .createdAt(subQuestion.getCreatedAt())
         .createdBy(createdBy)
         .updatedAt(subQuestion.getUpdatedAt())
@@ -143,6 +151,8 @@ public class QuestionMapper {
     return SubQuestionWithoutCommentsDto.builder()
         .id(subQuestion.getId())
         .title(subQuestion.getTitle())
+        .commentsCount((long) subQuestion.getComments().size())
+        .likesCount((long) subQuestion.getLikes().size())
         .createdAt(subQuestion.getCreatedAt())
         .updatedAt(subQuestion.getUpdatedAt())
         .build();
@@ -168,6 +178,7 @@ public class QuestionMapper {
         .parentId(comment.getParent() != null
             ? comment.getParent().getId()
             : null)
+        .likesCount((long) comment.getLikes().size())
         .createdAt(comment.getCreatedAt())
         .createdBy(comment.getCreatedBy())
         .updatedAt(comment.getUpdatedAt())
@@ -185,6 +196,7 @@ public class QuestionMapper {
         .parentId(comment.getParent() != null
             ? comment.getParent().getId()
             : null)
+        .likesCount((long) comment.getLikes().size())
         .createdAt(comment.getCreatedAt())
         .createdBy(comment.getCreatedBy())
         .updatedAt(comment.getUpdatedAt())

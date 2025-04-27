@@ -26,6 +26,8 @@ public class QuestionDto {
 
   private Long commentsCount = 0L;
 
+  private Long likesCount = 0L;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

@@ -23,6 +23,8 @@ public class CommentReplyDto {
 
   private UUID parentId;
 
+  private Long likesCount = 0L;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

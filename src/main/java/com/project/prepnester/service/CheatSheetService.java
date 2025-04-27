@@ -5,14 +5,17 @@ import com.project.prepnester.dto.request.CheatSheetRequestDto;
 import com.project.prepnester.dto.request.QuestionIdsRequestDto;
 import com.project.prepnester.dto.response.CategoryWithQuestionsDto;
 import com.project.prepnester.dto.response.CheatSheetDto;
+import com.project.prepnester.dto.response.CheatSheetPreview;
 import com.project.prepnester.dto.response.QuestionWithoutCategoryDto;
 import com.project.prepnester.model.content.Category;
 import com.project.prepnester.model.content.CheatSheet;
 import com.project.prepnester.model.content.Question;
 import com.project.prepnester.repository.CategoryRepository;
 import com.project.prepnester.repository.CheatSheetRepository;
+import com.project.prepnester.repository.CommentRepository;
+import com.project.prepnester.repository.LikeRepository;
 import com.project.prepnester.repository.QuestionRepository;
-import com.project.prepnester.service.mapper.QuestionToQuestionWithoutCategoryDtoMapper;
+import com.project.prepnester.service.mapper.QuestionMapper;
 import com.project.prepnester.util.exceptions.NoPermissionException;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import java.time.LocalDateTime;
@@ -36,21 +39,29 @@ public class CheatSheetService {
 
   private final CategoryRepository categoryRepository;
 
+  private final LikeRepository likeRepository;
+
   private final UserIdService userIdService;
 
-  public List<CheatSheetDto> getCheatSheets() {
+  private final CommentRepository commentRepository;
+
+  public List<CheatSheetPreview> getCheatSheets() {
     log.info("Fetching all cheat sheets from the database");
 
     return cheatSheetRepository.findAll()
         .stream()
         .map(cheatSheet -> {
-          List<CategoryWithQuestionsDto> categoriesWithQuestions = getCheatSheetsCategories(
-              cheatSheet);
 
-          return CheatSheetDto.builder()
+          return CheatSheetPreview.builder()
               .id(cheatSheet.getId())
               .title(cheatSheet.getTitle())
-              .categories(categoriesWithQuestions)
+              .likesCount((long) likeRepository.findAllByCheatSheetId(cheatSheet.getId()).size())
+              .commentsCount(
+                  cheatSheet.getQuestions().stream()
+                      .mapToLong(question -> commentRepository.findAllByQuestionId(question.getId())
+                          .size())
+                      .sum()
+              )
               .createdAt(cheatSheet.getCreatedAt())
               .updatedAt(cheatSheet.getUpdatedAt())
               .createdBy(cheatSheet.getCreatedBy())
@@ -161,8 +172,23 @@ public class CheatSheetService {
           List<QuestionWithoutCategoryDto> filteredQuestions = cheatSheet.getQuestions()
               .stream()
               .filter(q -> q.getCategory().getTitle().equals(category.getTitle()))
-              .map(
-                  QuestionToQuestionWithoutCategoryDtoMapper.INSTANCE::questionToQuestionWithoutCategoryDto)
+              .map(question ->
+                  QuestionWithoutCategoryDto.builder()
+                      .id(question.getId())
+                      .title(question.getTitle())
+                      .isPublic(question.getIsPublic())
+                      .likesCount(
+                          (long) likeRepository.findAllByQuestionId(question.getId()).size())
+                      .commentsCount(
+                          (long) commentRepository.findAllByQuestionId(question.getId()).size()
+                      )
+                      .subQuestions(question.getSubQuestions().stream()
+                          .map(QuestionMapper::mapSubQuestionToDtoWithoutComments)
+                          .toList())
+                      .createdAt(question.getCreatedAt())
+                      .updatedAt(question.getUpdatedAt())
+                      .build()
+              )
               .toList();
 
           return CategoryWithQuestionsDto.builder()

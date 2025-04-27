@@ -1,7 +1,6 @@
 package com.project.prepnester.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +11,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CheatSheetDto {
+public class CheatSheetPreview {
 
   private UUID id;
 
   private String title;
-
-  private List<CategoryWithQuestionsDto> categories;
 
   private LocalDateTime createdAt;
 
@@ -26,7 +23,10 @@ public class CheatSheetDto {
 
   private Long likesCount = 0L;
 
+  private Long commentsCount = 0L;
+
   private UUID createdBy;
 
   private UUID updatedBy;
 }
+

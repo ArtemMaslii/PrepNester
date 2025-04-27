@@ -1,8 +1,11 @@
 package com.project.prepnester.controller;
 
 import com.project.prepnester.dto.request.CheatSheetRequestDto;
+import com.project.prepnester.dto.request.UserIdDto;
 import com.project.prepnester.dto.response.CheatSheetDto;
+import com.project.prepnester.dto.response.CheatSheetPreview;
 import com.project.prepnester.service.CheatSheetService;
+import com.project.prepnester.service.LikeService;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -24,8 +27,10 @@ public class CheatSheetController {
 
   private final CheatSheetService cheatSheetService;
 
+  private final LikeService likeService;
+
   @GetMapping
-  public List<CheatSheetDto> getCheatSheets() {
+  public List<CheatSheetPreview> getCheatSheets() {
     return cheatSheetService.getCheatSheets();
   }
 
@@ -53,5 +58,18 @@ public class CheatSheetController {
   public ResponseEntity<Void> deleteCheatSheet(@PathVariable UUID id) {
     cheatSheetService.deleteCheatSheet(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping({"/{id}/like"})
+  public ResponseEntity<Void> likeCheatSheet(@PathVariable UUID id, @RequestBody UserIdDto user) {
+    likeService.likeCheatSheet(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping({"/{id}/like"})
+  public ResponseEntity<Void> removeLikeCheatSheet(@PathVariable UUID id,
+      @RequestBody UserIdDto user) {
+    likeService.removeCheatSheetLike(id, user.getUserId());
+    return ResponseEntity.ok().build();
   }
 }

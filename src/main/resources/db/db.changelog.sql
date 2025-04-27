@@ -140,26 +140,6 @@ CREATE TABLE interview
     FOREIGN KEY (created_by) REFERENCES user_details (id)
 );
 
--- Question Likes
-CREATE TABLE question_likes
-(
-    user_id     UUID NOT NULL,
-    question_id UUID NOT NULL,
-    PRIMARY KEY (user_id, question_id),
-    FOREIGN KEY (user_id) REFERENCES user_details (id),
-    FOREIGN KEY (question_id) REFERENCES question (id)
-);
-
--- Cheat Sheet Likes
-CREATE TABLE cheat_sheet_likes
-(
-    user_id        UUID NOT NULL,
-    cheat_sheet_id UUID NOT NULL,
-    PRIMARY KEY (user_id, cheat_sheet_id),
-    FOREIGN KEY (user_id) REFERENCES user_details (id),
-    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
-);
-
 -- Comment
 CREATE TABLE comment
 (
@@ -177,6 +157,21 @@ CREATE TABLE comment
     FOREIGN KEY (question_id) REFERENCES question (id),
     FOREIGN KEY (sub_question_id) REFERENCES sub_questions (id),
     FOREIGN KEY (parent_id) REFERENCES comment (id)
+);
+
+CREATE TABLE likes
+(
+    id              UUID PRIMARY KEY,
+    user_id         UUID NOT NULL,
+    question_id     UUID,
+    sub_question_id UUID,
+    comment_id      UUID,
+    cheat_sheet_id  UUID,
+    FOREIGN KEY (user_id) REFERENCES user_details (id),
+    FOREIGN KEY (question_id) REFERENCES question (id),
+    FOREIGN KEY (sub_question_id) REFERENCES sub_questions (id),
+    FOREIGN KEY (comment_id) REFERENCES comment (id),
+    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
 );
 
 -- Many-to-Many: Categories & Cheat Sheets

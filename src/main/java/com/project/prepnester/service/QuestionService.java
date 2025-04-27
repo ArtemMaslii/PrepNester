@@ -14,6 +14,7 @@ import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
 import com.project.prepnester.repository.CategoryRepository;
 import com.project.prepnester.repository.CommentRepository;
+import com.project.prepnester.repository.LikeRepository;
 import com.project.prepnester.repository.QuestionRepository;
 import com.project.prepnester.repository.SubQuestionRepository;
 import com.project.prepnester.repository.UserRepository;
@@ -49,6 +50,8 @@ public class QuestionService {
 
   private final CommentRepository commentRepository;
 
+  private final LikeRepository likeRepository;
+
 
   @Transactional(readOnly = true)
   public List<QuestionDto> getAllQuestions(PageInfoDto pageInfoDto, SortBy sortBy,
@@ -69,7 +72,8 @@ public class QuestionService {
 
     return fetchedQuestions.stream()
         .map(question -> mapQuestionToDto(question,
-            commentRepository.findAllByQuestionId(question.getId())))
+            commentRepository.findAllByQuestionId(question.getId()),
+            likeRepository.findAllByQuestionId(question.getId())))
         .toList();
   }
 
@@ -135,7 +139,7 @@ public class QuestionService {
     }
 
     saved.setSubQuestions(subQuestions);
-    return mapQuestionToDto(saved, List.of());
+    return mapQuestionToDto(saved, List.of(), List.of());
   }
 
   public QuestionDto updateQuestion(UUID questionId, UpdateQuestionBodyRequest body) {
@@ -153,7 +157,8 @@ public class QuestionService {
     question.setUpdatedAt(LocalDateTime.now());
 
     return mapQuestionToDto(questionRepository.save(question),
-        commentRepository.findAllByQuestionId(questionId));
+        commentRepository.findAllByQuestionId(questionId),
+        likeRepository.findAllByQuestionId(questionId));
   }
 
 

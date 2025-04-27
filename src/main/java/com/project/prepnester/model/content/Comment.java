@@ -45,6 +45,10 @@ public class Comment {
   @JsonIgnore
   private SubQuestion subQuestion;
 
+  @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<Like> likes = new ArrayList<>();
+
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 

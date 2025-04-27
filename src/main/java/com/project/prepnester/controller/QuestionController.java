@@ -6,6 +6,7 @@ import com.project.prepnester.dto.request.CreateQuestionBodyRequest;
 import com.project.prepnester.dto.request.PageInfoDto;
 import com.project.prepnester.dto.request.SubQuestionDtoRequest;
 import com.project.prepnester.dto.request.UpdateQuestionBodyRequest;
+import com.project.prepnester.dto.request.UserIdDto;
 import com.project.prepnester.dto.response.CommentQuestionDto;
 import com.project.prepnester.dto.response.CommentSubQuestionDto;
 import com.project.prepnester.dto.response.QuestionDetailsDto;
@@ -14,6 +15,7 @@ import com.project.prepnester.dto.response.SubQuestionDto;
 import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.service.CommentService;
+import com.project.prepnester.service.LikeService;
 import com.project.prepnester.service.QuestionService;
 import com.project.prepnester.service.SubQuestionService;
 import jakarta.validation.Valid;
@@ -45,6 +47,8 @@ public class QuestionController {
   private final SubQuestionService subQuestionService;
 
   private final CommentService commentService;
+
+  private final LikeService likeService;
 
   @GetMapping
   public List<QuestionDto> getAllQuestions(
@@ -150,5 +154,45 @@ public class QuestionController {
   public ResponseEntity<Void> deleteComment(@PathVariable UUID commentId) {
     commentService.deleteComment(commentId);
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping({"/{id}/like"})
+  public ResponseEntity<Void> likeQuestion(@PathVariable UUID id, @RequestBody UserIdDto user) {
+    likeService.likeQuestion(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping({"/sub-questions/{id}/like"})
+  public ResponseEntity<Void> likeSubQuestion(@PathVariable UUID id,
+      @RequestBody UserIdDto user) {
+    likeService.likeSubQuestion(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping({"/comments/{id}/like"})
+  public ResponseEntity<Void> likeComment(@PathVariable UUID id, @RequestBody UserIdDto user) {
+    likeService.likeComment(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping({"/{id}/like"})
+  public ResponseEntity<Void> removeLikeQuestion(@PathVariable UUID id,
+      @RequestBody UserIdDto user) {
+    likeService.removeQuestionLike(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping({"/sub-questions/{id}/like"})
+  public ResponseEntity<Void> removeLikeSubQuestion(@PathVariable UUID id,
+      @RequestBody UserIdDto user) {
+    likeService.removeSubQuestionLike(id, user.getUserId());
+    return ResponseEntity.ok().build();
+  }
+
+  @DeleteMapping({"/comments/{id}/like"})
+  public ResponseEntity<Void> removeLikeComment(@PathVariable UUID id,
+      @RequestBody UserIdDto user) {
+    likeService.removeCommentLike(id, user.getUserId());
+    return ResponseEntity.ok().build();
   }
 }

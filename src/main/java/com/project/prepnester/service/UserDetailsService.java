@@ -55,7 +55,6 @@ public class UserDetailsService {
         .fullName(userDetails.getFullName())
         .email(userDetails.getEmail())
         .passwordHash(passwordEncoder.encode(userDetails.getPassword()))
-        .phoneNumber(userDetails.getPhoneNumber())
         .gender(userDetails.getGender())
         .role(role)
         .build();

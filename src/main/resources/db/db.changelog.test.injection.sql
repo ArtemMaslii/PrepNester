@@ -95,22 +95,6 @@ VALUES ('c5f3bfae-2314-48e1-9a72-bb0281775d34', 'f98e3db5-c055-4681-81f7-2bc0101
         '2025-03-27', 'Data Science',
         'Candidate needs to improve SQL knowledge', 'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
 
--- Question Likes
--- changeset testdata:12
-INSERT INTO question_likes (user_id, question_id)
-VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423',
-        '784bfa2b-6fc4-4288-a8ae-0579c4cc0b18'),
-       ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b72',
-        '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d');
-
--- Cheat Sheet Likes
--- changeset testdata:13
-INSERT INTO cheat_sheet_likes (user_id, cheat_sheet_id)
-VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423',
-        'f03236c3-5746-4d2b-9c97-6b93c340e79f'),
-       ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b72',
-        'cfdb8f27-94a2-4cfc-8c8f-e5404db96869');
-
 -- Comment
 -- changeset testdata:14
 INSERT INTO comment (id, question_id, sub_question_id, message, parent_id, created_by)
