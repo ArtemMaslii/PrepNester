@@ -139,7 +139,8 @@ public class CheatSheetService {
     return CheatSheetDto.builder()
         .id(cheatSheet.getId())
         .title(cheatSheet.getTitle())
-        .categories(getCheatSheetsCategories(updated))
+        .categories(
+            getCheatSheetsCategories(updated))
         .createdAt(cheatSheet.getCreatedAt())
         .updatedAt(cheatSheet.getUpdatedAt())
         .createdBy(cheatSheet.getCreatedBy())
@@ -162,10 +163,7 @@ public class CheatSheetService {
     log.info("Cheat sheet with id: {} has been deleted successfully", id);
   }
 
-  private List<CategoryWithQuestionsDto> getCheatSheetsCategories(CheatSheet cheatSheet) {
-    log.info("Cheat Sheet {} {} {}", cheatSheet.getQuestions().get(0).getId(),
-        cheatSheet.getQuestions().get(0).getTitle(),
-        cheatSheet.getQuestions().get(0).getCategory());
+  public List<CategoryWithQuestionsDto> getCheatSheetsCategories(CheatSheet cheatSheet) {
 
     return cheatSheet.getCategories().stream()
         .map(category -> {

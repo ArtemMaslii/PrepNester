@@ -1,4 +1,4 @@
-package com.project.prepnester.model.userDetails;
+package com.project.prepnester.model.interview;
 
 import com.project.prepnester.model.content.CheatSheet;
 import jakarta.persistence.Column;
@@ -36,13 +36,19 @@ public class Candidate {
   @Column(name = "phone_number")
   private String phoneNumber;
 
+  @Column(name = "password_hash", nullable = false)
+  private String passwordHash;
+
+  @Column(name = "raw_password", nullable = false)
+  private String rawPassword;
+
   @ManyToOne
   @JoinColumn(name = "cheat_sheet_id")
   private CheatSheet cheatSheet;
 
+  @Column(name = "created_by", nullable = false)
+  private UUID createdBy;
+
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
 }

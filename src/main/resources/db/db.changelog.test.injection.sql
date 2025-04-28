@@ -77,22 +77,31 @@ VALUES ('f03236c3-5746-4d2b-9c97-6b93c340e79f', 'Sorting Algorithms',
 
 -- Candidate
 -- changeset testdata:10
-INSERT INTO candidate (id, full_name, email, phone_name, cheat_sheet_id)
-VALUES ('f98e3db5-c055-4681-81f7-2bc01018479b', 'Charlie Brown', 'charlie@example.com',
-        '1122334455', 'f03236c3-5746-4d2b-9c97-6b93c340e79f'),
-       ('9c54ff62-11bc-4d39-9b78-2648c9f42fa7', 'Dana White', 'dana@example.com', '9988776655',
-        'cfdb8f27-94a2-4cfc-8c8f-e5404db96869');
+INSERT INTO candidate (id, full_name, password_hash, raw_password, email, phone_number,
+                       cheat_sheet_id,
+                       created_by)
+VALUES ('f98e3db5-c055-4681-81f7-2bc01018479b', 'Charlie Brown',
+        '$2a$10$vhAYi9CvzaiFLgDjPWwAB.jvGMGcfSBfi8fLgbs7Nyf8WZUIvvcSe',
+        'f98e3db5-c055-4681-81f7-2bc01018479a',
+        'charlie@example.com',
+        '1122334455', 'f03236c3-5746-4d2b-9c97-6b93c340e79f',
+        'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
+       ('9c54ff62-11bc-4d39-9b78-2648c9f42fa7', 'Dana White',
+        '$2a$10$uqXtqWiVCuwpFqCvVUEazO75gVwT7ikMnWNjowXK99qHl.tLgVhe6',
+        '9c54ff62-11bc-4d39-9b78-2648c9f42fa8',
+        'dana@example.com',
+        '9988776655', 'cfdb8f27-94a2-4cfc-8c8f-e5404db96869',
+        'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
 
 -- Interview
 -- changeset testdata:11
-INSERT INTO interview (id, candidate_id, status, process_start_date, department_name, notes,
+INSERT INTO interview (id, candidate_id, open_position, status, department_name, notes,
                        created_by)
 VALUES ('c5f3bfae-2314-48e1-9a72-bb0281775d34', 'f98e3db5-c055-4681-81f7-2bc01018479b',
-        'In Progress', '2025-03-27', 'Software Engineering',
-        'Candidate has strong DSA skills',
+        'Software Engineer', 'IN_PROGRESS', 'Kaunas Office', null,
         'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
-       ('3ad72cd1-bfc3-4b65-84db-651bfa214a7f', '9c54ff62-11bc-4d39-9b78-2648c9f42fa7', 'Pending',
-        '2025-03-27', 'Data Science',
+       ('3ad72cd1-bfc3-4b65-84db-651bfa214a7f', '9c54ff62-11bc-4d39-9b78-2648c9f42fa7',
+        'Data Scientist', 'CANCELLED', 'Remote',
         'Candidate needs to improve SQL knowledge', 'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
 
 -- Comment

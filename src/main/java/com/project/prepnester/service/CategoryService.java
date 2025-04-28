@@ -3,7 +3,6 @@ package com.project.prepnester.service;
 import com.project.prepnester.dto.response.CategoryDto;
 import com.project.prepnester.model.content.Category;
 import com.project.prepnester.repository.CategoryRepository;
-import com.project.prepnester.service.mapper.CategoryToCategoryDtoMapper;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +22,13 @@ public class CategoryService {
     return categoryRepository
         .findAll()
         .stream()
-        .map(CategoryToCategoryDtoMapper.INSTANCE::categoryToCategoryDto).toList();
+        .map(
+            category ->
+                CategoryDto.builder()
+                    .id(category.getId())
+                    .title(category.getTitle())
+                    .build()
+        ).toList();
   }
 
   public CategoryDto getCategoryById(UUID id) {
@@ -31,6 +36,9 @@ public class CategoryService {
     Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new NotFoundException("Category not found"));
 
-    return CategoryToCategoryDtoMapper.INSTANCE.categoryToCategoryDto(category);
+    return CategoryDto.builder()
+        .id(category.getId())
+        .title(category.getTitle())
+        .build();
   }
 }

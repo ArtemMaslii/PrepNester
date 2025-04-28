@@ -132,6 +132,8 @@ public class QuestionService {
               .parentQuestion(saved)
               .createdBy(body.getCreatedBy())
               .createdAt(LocalDateTime.now())
+              .comments(List.of())
+              .likes(List.of())
               .build())
           .collect(Collectors.toList());
 

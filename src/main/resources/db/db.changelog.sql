@@ -110,36 +110,6 @@ CREATE TABLE cheat_sheet
     FOREIGN KEY (updated_by) REFERENCES user_details (id)
 );
 
--- Candidate
-CREATE TABLE candidate
-(
-    id             UUID PRIMARY KEY,
-    full_name      VARCHAR(255) NOT NULL,
-    email          VARCHAR(255) NOT NULL,
-    phone_name     VARCHAR(255) NOT NULL,
-    cheat_sheet_id UUID,
-    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
-);
-
--- Interview
-CREATE TABLE interview
-(
-    id                 UUID PRIMARY KEY,
-    candidate_id       UUID         NOT NULL,
-    status             VARCHAR(255) NOT NULL,
-    process_start_date TIMESTAMP,
-    department_name    VARCHAR(255),
-    notes              TEXT,
-    created_by         UUID,
-    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    updated_by         UUID,
-    FOREIGN KEY (candidate_id) REFERENCES candidate (id),
-    FOREIGN KEY (created_by) REFERENCES user_details (id)
-);
-
 -- Comment
 CREATE TABLE comment
 (
@@ -200,6 +170,35 @@ CREATE TABLE categories_questions
     question_id UUID NOT NULL,
     category_id UUID NOT NULL,
     PRIMARY KEY (question_id, category_id),
-    FOREIGN KEY (question_id) REFERENCES question (id),
+    FOREIGN KEY (question_id) REFERENCES question (id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES category (id)
+);
+
+CREATE TABLE candidate
+(
+    id             UUID PRIMARY KEY,
+    full_name      VARCHAR(255) NOT NULL,
+    password_hash  VARCHAR(255) NOT NULL,
+    raw_password   VARCHAR(255) NOT NULL,
+    email          VARCHAR(255) NOT NULL UNIQUE,
+    phone_number   VARCHAR(255),
+    cheat_sheet_id UUID,
+    created_by     UUID         NOT NULL,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cheat_sheet_id) REFERENCES cheat_sheet (id)
+);
+
+-- Interview
+CREATE TABLE interview
+(
+    id              UUID PRIMARY KEY,
+    candidate_id    UUID         NOT NULL,
+    open_position   VARCHAR(255) NOT NULL,
+    department_name VARCHAR(255) NOT NULL,
+    status          VARCHAR(255) NOT NULL,
+    notes           TEXT,
+    created_by      UUID,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES user_details (id),
+    FOREIGN KEY (candidate_id) REFERENCES candidate (id)
 );
