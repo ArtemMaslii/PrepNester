@@ -1,12 +1,17 @@
 package com.project.prepnester.dto.response;
 
+import com.project.prepnester.model.userDetails.AccessType;
 import com.project.prepnester.model.userDetails.Gender;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class UserDetailsResponse {
 
   private UUID id;
@@ -19,4 +24,5 @@ public class UserDetailsResponse {
 
   private Gender gender;
 
+  private AccessType role;
 }

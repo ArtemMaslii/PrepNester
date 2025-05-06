@@ -37,7 +37,8 @@ class UserDetailsApiTest extends BaseTest {
           "email": "testuser@example.com",
           "password": "password123",
           "phoneNumber": null,
-          "gender": "MALE"
+          "gender": "MALE",
+          "role": "ADMIN"
         }
         """;
 

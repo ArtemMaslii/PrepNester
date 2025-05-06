@@ -7,7 +7,6 @@ import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.model.userDetails.Role;
 import com.project.prepnester.repository.RoleRepository;
 import com.project.prepnester.repository.UserRepository;
-import com.project.prepnester.service.mapper.UserToUserDetailsResponseMapper;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,16 +24,20 @@ public class UserDetailsService {
 
   private final BCryptPasswordEncoder passwordEncoder;
 
-  private final UserToUserDetailsResponseMapper userToUserDetailsResponseMapper =
-      UserToUserDetailsResponseMapper.INSTANCE;
-
   @Transactional(readOnly = true)
   public UserDetailsResponse getUserDetails(String email) {
     PrepNesterUserDetails user = userRepository.findByEmail(email).orElseThrow(
         () -> new NotFoundException("User with email " + email + " not found")
     );
 
-    return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(user);
+    return UserDetailsResponse.builder()
+        .id(user.getId())
+        .fullName(user.getFullName())
+        .email(user.getEmail())
+        .phoneNumber(user.getPhoneNumber())
+        .gender(user.getGender())
+        .role(user.getRole().getAccessType())
+        .build();
   }
 
   public UserDetailsResponse registerUser(UserDetailsRequest userDetails) {
@@ -45,11 +48,18 @@ public class UserDetailsService {
     PrepNesterUserDetails userToSave = prepareUserDetails(userDetails);
     PrepNesterUserDetails savedUser = userRepository.save(userToSave);
 
-    return userToUserDetailsResponseMapper.prepNesterUserToUserDetailsResponse(savedUser);
+    return UserDetailsResponse.builder()
+        .id(savedUser.getId())
+        .fullName(savedUser.getFullName())
+        .email(savedUser.getEmail())
+        .phoneNumber(savedUser.getPhoneNumber())
+        .gender(savedUser.getGender())
+        .role(savedUser.getRole().getAccessType())
+        .build();
   }
 
   private PrepNesterUserDetails prepareUserDetails(UserDetailsRequest userDetails) {
-    Role role = roleRepository.findByAccessType(AccessType.CANDIDATE);
+    Role role = roleRepository.findByAccessType(AccessType.ADMIN);
 
     return PrepNesterUserDetails.builder()
         .fullName(userDetails.getFullName())

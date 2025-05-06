@@ -51,7 +51,7 @@ class UserDetailsServiceTest {
   void setUp() {
     candidateRole = Role.builder()
         .id(UUID.randomUUID())
-        .accessType(AccessType.CANDIDATE)
+        .accessType(AccessType.ADMIN)
         .build();
 
     user = PrepNesterUserDetails.builder()
@@ -101,7 +101,7 @@ class UserDetailsServiceTest {
     request.setGender(Gender.FEMALE);
 
     when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
-    when(roleRepository.findByAccessType(AccessType.CANDIDATE)).thenReturn(candidateRole);
+    when(roleRepository.findByAccessType(AccessType.ADMIN)).thenReturn(candidateRole);
     when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedPassword");
     when(userRepository.save(any(PrepNesterUserDetails.class))).thenAnswer(invocation -> {
       PrepNesterUserDetails savedUser = invocation.getArgument(0);
@@ -117,7 +117,7 @@ class UserDetailsServiceTest {
     assertEquals(request.getEmail(), result.getEmail());
     assertEquals(request.getFullName(), result.getFullName());
     verify(userRepository, times(1)).findByEmail(request.getEmail());
-    verify(roleRepository, times(1)).findByAccessType(AccessType.CANDIDATE);
+    verify(roleRepository, times(1)).findByAccessType(AccessType.ADMIN);
     verify(userRepository, times(1)).save(any(PrepNesterUserDetails.class));
   }
 

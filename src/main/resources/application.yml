@@ -26,6 +26,10 @@ spring:
         jwt:
           issuer-uri: ${ISSUER_URI}
 
+  graphql:
+    cors:
+      allowed-origins: ${ALLOWED_ORIGINS}
+
 custom:
   api:
     paths:
