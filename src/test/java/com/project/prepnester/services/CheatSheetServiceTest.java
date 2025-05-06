@@ -67,6 +67,7 @@ class CheatSheetServiceTest {
     CheatSheet cheatSheet = CheatSheet.builder()
         .id(cheatSheetId)
         .title("Sample CheatSheet")
+        .isPublic(true)
         .questions(Collections.emptyList())
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -78,7 +79,7 @@ class CheatSheetServiceTest {
     when(likeRepository.findAllByCheatSheetId(cheatSheetId)).thenReturn(Collections.emptyList());
 
     // when
-    var result = cheatSheetService.getCheatSheets();
+    var result = cheatSheetService.getCheatSheets(null);
 
     // then
     assertThat(result).hasSize(1);
@@ -93,6 +94,7 @@ class CheatSheetServiceTest {
     CheatSheet cheatSheet = CheatSheet.builder()
         .id(cheatSheetId)
         .title("Sample CheatSheet")
+        .isPublic(true)
         .categories(Collections.emptyList())
         .questions(Collections.emptyList())
         .createdAt(LocalDateTime.now())
@@ -126,6 +128,7 @@ class CheatSheetServiceTest {
     // given
     CheatSheetRequestDto requestDto = CheatSheetRequestDto.builder()
         .title("New CheatSheet")
+        .isPublic(true)
         .categories(Collections.emptyList())
         .build();
 
@@ -133,6 +136,7 @@ class CheatSheetServiceTest {
     CheatSheet savedCheatSheet = CheatSheet.builder()
         .id(savedId)
         .title("New CheatSheet")
+        .isPublic(true)
         .categories(Collections.emptyList())
         .questions(Collections.emptyList())
         .createdAt(LocalDateTime.now())
@@ -158,6 +162,7 @@ class CheatSheetServiceTest {
     CheatSheet existing = CheatSheet.builder()
         .id(cheatSheetId)
         .title("Old Title")
+        .isPublic(false)
         .createdBy(userId)
         .categories(Collections.emptyList())
         .questions(Collections.emptyList())
@@ -165,6 +170,7 @@ class CheatSheetServiceTest {
 
     CheatSheetRequestDto updateRequest = CheatSheetRequestDto.builder()
         .title("Updated Title")
+        .isPublic(true)
         .categories(Collections.emptyList())
         .build();
 
@@ -191,6 +197,7 @@ class CheatSheetServiceTest {
 
     CheatSheetRequestDto updateRequest = CheatSheetRequestDto.builder()
         .title("Updated Title")
+        .isPublic(true)
         .categories(Collections.emptyList())
         .build();
 

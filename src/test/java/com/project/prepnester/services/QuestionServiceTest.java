@@ -93,7 +93,8 @@ public class QuestionServiceTest {
     when(commentRepository.findAllByQuestionId(questionId)).thenReturn(List.of());
     when(likeRepository.findAllByQuestionId(questionId)).thenReturn(List.of());
 
-    List<QuestionDto> result = questionService.getAllQuestions(pageInfo, SortBy.ASCENDING, true);
+    List<QuestionDto> result = questionService.getAllQuestions(pageInfo, SortBy.ASCENDING, true,
+        "");
 
     assertThat(result).hasSize(1);
     verify(questionRepository).findAllByIsPublic(true,
@@ -108,7 +109,8 @@ public class QuestionServiceTest {
         PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "title"))))
         .thenReturn(List.of());
 
-    List<QuestionDto> result = questionService.getAllQuestions(pageInfo, SortBy.ASCENDING, true);
+    List<QuestionDto> result = questionService.getAllQuestions(pageInfo, SortBy.ASCENDING, true,
+        "");
 
     assertThat(result).isEmpty();
   }

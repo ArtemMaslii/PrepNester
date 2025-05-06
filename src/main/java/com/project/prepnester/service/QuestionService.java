@@ -55,7 +55,7 @@ public class QuestionService {
 
   @Transactional(readOnly = true)
   public List<QuestionDto> getAllQuestions(PageInfoDto pageInfoDto, SortBy sortBy,
-      Boolean isPublic) {
+      Boolean isPublic, String search) {
     Pageable pageable = PageRequest.of(
         pageInfoDto.getPage(),
         pageInfoDto.getSize(),
@@ -68,9 +68,18 @@ public class QuestionService {
         isPublic,
         sortBy);
 
-    List<Question> fetchedQuestions = questionRepository.findAllByIsPublic(isPublic, pageable);
+    List<Question> questions;
 
-    return fetchedQuestions.stream()
+    if (search == null || search.isBlank()) {
+      questions = questionRepository.findAllByIsPublic(isPublic, pageable);
+    } else {
+      questions = questionRepository.findAllByIsPublicAndTitleOrSubTitleContains(
+          isPublic,
+          search.toLowerCase()
+      );
+    }
+
+    return questions.stream()
         .map(question -> mapQuestionToDto(question,
             commentRepository.findAllByQuestionId(question.getId()),
             likeRepository.findAllByQuestionId(question.getId())))

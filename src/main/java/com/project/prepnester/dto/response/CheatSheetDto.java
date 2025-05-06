@@ -18,6 +18,8 @@ public class CheatSheetDto {
 
   private String title;
 
+  private Boolean isPublic;
+
   private List<CategoryWithQuestionsDto> categories;
 
   private LocalDateTime createdAt;

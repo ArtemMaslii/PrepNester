@@ -47,6 +47,9 @@ public class CheatSheet {
   )
   private List<Question> questions;
 
+  @Column(name = "is_public", nullable = false)
+  private Boolean isPublic;
+
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 

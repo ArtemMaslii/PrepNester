@@ -69,10 +69,10 @@ VALUES ('f5d1b9fe-2b50-4b5c-befb-7b4f82fa1b5e', '784bfa2b-6fc4-4288-a8ae-0579c4c
 
 -- Cheat Sheet
 -- changeset testdata:9
-INSERT INTO cheat_sheet (id, title, created_by)
-VALUES ('f03236c3-5746-4d2b-9c97-6b93c340e79f', 'Sorting Algorithms',
+INSERT INTO cheat_sheet (id, title, is_public, created_by)
+VALUES ('f03236c3-5746-4d2b-9c97-6b93c340e79f', 'Sorting Algorithms', 'true',
         'a1f42067-8f71-4be1-bc9d-95adf4f5c423'),
-       ('cfdb8f27-94a2-4cfc-8c8f-e5404db96869', 'Data Structures Guide',
+       ('cfdb8f27-94a2-4cfc-8c8f-e5404db96869', 'Data Structures Guide', 'false',
         'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72');
 
 -- Candidate

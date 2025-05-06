@@ -17,6 +17,8 @@ public class CheatSheetPreview {
 
   private String title;
 
+  private Boolean isPublic;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

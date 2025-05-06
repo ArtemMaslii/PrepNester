@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,8 +31,8 @@ public class CheatSheetController {
   private final LikeService likeService;
 
   @GetMapping
-  public List<CheatSheetPreview> getCheatSheets() {
-    return cheatSheetService.getCheatSheets();
+  public List<CheatSheetPreview> getCheatSheets(@RequestParam(required = false) String search) {
+    return cheatSheetService.getCheatSheets(search);
   }
 
   @GetMapping("/{id}")

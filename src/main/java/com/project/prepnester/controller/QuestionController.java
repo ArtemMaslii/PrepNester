@@ -55,12 +55,14 @@ public class QuestionController {
       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
       @RequestParam(required = false, defaultValue = "25") Integer pageSize,
       @RequestParam(required = false, defaultValue = "true") Boolean isPublic,
-      @RequestParam(required = false, defaultValue = "ASCENDING") SortBy sortBy) {
+      @RequestParam(required = false, defaultValue = "ASCENDING") SortBy sortBy,
+      @RequestParam(required = false) String search) {
 
     return questionService.getAllQuestions(
         new PageInfoDto(pageNum, pageSize),
         sortBy,
-        isPublic
+        isPublic,
+        search
     );
   }
 

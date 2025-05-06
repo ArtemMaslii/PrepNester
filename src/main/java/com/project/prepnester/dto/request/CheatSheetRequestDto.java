@@ -14,5 +14,7 @@ public class CheatSheetRequestDto {
 
   private String title;
 
+  private Boolean isPublic;
+
   private List<CategoryWithQuestionsRequestDto> categories;
 }

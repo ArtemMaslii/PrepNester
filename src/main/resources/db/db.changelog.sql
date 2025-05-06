@@ -101,8 +101,9 @@ CREATE TABLE sub_questions
 CREATE TABLE cheat_sheet
 (
     id         UUID PRIMARY KEY,
-    title      TEXT NOT NULL,
-    created_by UUID NOT NULL,
+    title      TEXT    NOT NULL,
+    is_public  BOOLEAN NOT NULL,
+    created_by UUID    NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by UUID,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

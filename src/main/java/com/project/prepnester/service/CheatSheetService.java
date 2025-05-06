@@ -45,29 +45,31 @@ public class CheatSheetService {
 
   private final CommentRepository commentRepository;
 
-  public List<CheatSheetPreview> getCheatSheets() {
+  public List<CheatSheetPreview> getCheatSheets(String search) {
     log.info("Fetching all cheat sheets from the database");
 
-    return cheatSheetRepository.findAll()
-        .stream()
-        .map(cheatSheet -> {
+    List<CheatSheet> cheatSheets = search == null || search.isEmpty()
+        ? cheatSheetRepository.findAll()
+        : cheatSheetRepository.findAllByTitleContainingIgnoreCase(search);
 
-          return CheatSheetPreview.builder()
-              .id(cheatSheet.getId())
-              .title(cheatSheet.getTitle())
-              .likesCount((long) likeRepository.findAllByCheatSheetId(cheatSheet.getId()).size())
-              .commentsCount(
-                  cheatSheet.getQuestions().stream()
-                      .mapToLong(question -> commentRepository.findAllByQuestionId(question.getId())
-                          .size())
-                      .sum()
-              )
-              .createdAt(cheatSheet.getCreatedAt())
-              .updatedAt(cheatSheet.getUpdatedAt())
-              .createdBy(cheatSheet.getCreatedBy())
-              .updatedBy(cheatSheet.getUpdatedBy())
-              .build();
-        })
+    return cheatSheets
+        .stream()
+        .map(cheatSheet -> CheatSheetPreview.builder()
+            .id(cheatSheet.getId())
+            .title(cheatSheet.getTitle())
+            .isPublic(cheatSheet.getIsPublic())
+            .likesCount((long) likeRepository.findAllByCheatSheetId(cheatSheet.getId()).size())
+            .commentsCount(
+                cheatSheet.getQuestions().stream()
+                    .mapToLong(question -> commentRepository.findAllByQuestionId(question.getId())
+                        .size())
+                    .sum()
+            )
+            .createdAt(cheatSheet.getCreatedAt())
+            .updatedAt(cheatSheet.getUpdatedAt())
+            .createdBy(cheatSheet.getCreatedBy())
+            .updatedBy(cheatSheet.getUpdatedBy())
+            .build())
         .toList();
   }
 
@@ -80,6 +82,7 @@ public class CheatSheetService {
     return CheatSheetDto.builder()
         .id(cheatSheet.getId())
         .title(cheatSheet.getTitle())
+        .isPublic(cheatSheet.getIsPublic())
         .categories(getCheatSheetsCategories(cheatSheet))
         .createdAt(cheatSheet.getCreatedAt())
         .updatedAt(cheatSheet.getUpdatedAt())
@@ -97,6 +100,7 @@ public class CheatSheetService {
         .title(body.getTitle())
         .categories(data.getLeft())
         .questions(data.getRight())
+        .isPublic(body.getIsPublic())
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
         .createdBy(userIdService.getCurrentUserId())
@@ -108,6 +112,7 @@ public class CheatSheetService {
     return CheatSheetDto.builder()
         .id(cheatSheet.getId())
         .title(cheatSheet.getTitle())
+        .isPublic(cheatSheet.getIsPublic())
         .categories(getCheatSheetsCategories(saved))
         .createdAt(cheatSheet.getCreatedAt())
         .updatedAt(cheatSheet.getUpdatedAt())
@@ -131,6 +136,7 @@ public class CheatSheetService {
     cheatSheet.setTitle(body.getTitle());
     cheatSheet.setCategories(data.getLeft());
     cheatSheet.setQuestions(data.getRight());
+    cheatSheet.setIsPublic(body.getIsPublic());
     cheatSheet.setUpdatedAt(LocalDateTime.now());
     cheatSheet.setUpdatedBy(userIdService.getCurrentUserId());
 
@@ -139,6 +145,7 @@ public class CheatSheetService {
     return CheatSheetDto.builder()
         .id(cheatSheet.getId())
         .title(cheatSheet.getTitle())
+        .isPublic(cheatSheet.getIsPublic())
         .categories(
             getCheatSheetsCategories(updated))
         .createdAt(cheatSheet.getCreatedAt())
