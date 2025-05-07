@@ -9,6 +9,7 @@ import com.project.prepnester.dto.request.PageInfoDto;
 import com.project.prepnester.dto.request.UpdateQuestionBodyRequest;
 import com.project.prepnester.dto.response.QuestionDetailsDto;
 import com.project.prepnester.dto.response.QuestionDto;
+import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.model.content.Category;
 import com.project.prepnester.model.content.Question;
@@ -99,7 +100,7 @@ public class QuestionService {
     Comparator<QuestionDto> byTotalLikes = Comparator.comparingLong(dto -> {
       Long totalLikes = dto.getLikesCount();
       for (Object sub : dto.getSubQuestions()) {
-        if (sub instanceof QuestionDto subDto) {
+        if (sub instanceof SubQuestionWithoutCommentsDto subDto) {
           totalLikes += subDto.getLikesCount();
         }
       }
@@ -109,7 +110,7 @@ public class QuestionService {
     Comparator<QuestionDto> byTotalComments = Comparator.comparingLong(dto -> {
       Long totalComments = dto.getCommentsCount();
       for (Object sub : dto.getSubQuestions()) {
-        if (sub instanceof QuestionDto subDto) {
+        if (sub instanceof SubQuestionWithoutCommentsDto subDto) {
           totalComments += subDto.getCommentsCount();
         }
       }
