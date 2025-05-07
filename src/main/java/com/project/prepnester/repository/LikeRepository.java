@@ -28,4 +28,10 @@ public interface LikeRepository extends JpaRepository<Like, UUID> {
   void deleteBySubQuestionIdAndUserId(UUID subQuestionId, UUID userId);
 
   void deleteByCommentIdAndUserId(UUID commentId, UUID userId);
+
+  Boolean existsByCheatSheetIdAndUserId(UUID cheatSheetId, UUID userId);
+
+  Boolean existsByQuestionIdAndUserId(UUID questionId, UUID userId);
+
+  Boolean existsBySubQuestionIdAndUserId(UUID subQuestionId, UUID userId);
 }

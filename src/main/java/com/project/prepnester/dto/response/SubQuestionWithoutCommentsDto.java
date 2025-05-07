@@ -27,4 +27,6 @@ public class SubQuestionWithoutCommentsDto {
 
   private LocalDateTime updatedAt;
 
+  private Boolean isLikedByCurrentUser;
+
 }

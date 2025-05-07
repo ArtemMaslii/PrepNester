@@ -15,11 +15,12 @@ import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class QuestionMapper {
 
   public static QuestionDto mapQuestionToDto(Question question, List<Comment> comments,
-      List<Like> likes) {
+      List<Like> likes, Boolean isLikedByCurrentUser, List<UUID> likedSubQuestionIds) {
     return QuestionDto.builder()
         .id(question.getId())
         .title(question.getTitle())
@@ -27,12 +28,15 @@ public class QuestionMapper {
         .category(CategoryToCategoryDtoMapper.INSTANCE.categoryToCategoryDto(
             question.getCategory()))
         .subQuestions(question.getSubQuestions().stream()
-            .map(QuestionMapper::mapSubQuestionToDtoWithoutComments)
+            .map(
+                subQuestion -> mapSubQuestionToDtoWithoutComments(subQuestion,
+                    likedSubQuestionIds.contains(subQuestion.getId())))
             .toList())
         .commentsCount((long) comments.size())
         .likesCount((long) likes.size())
         .createdAt(question.getCreatedAt())
         .updatedAt(question.getUpdatedAt())
+        .isLikedByCurrentUser(isLikedByCurrentUser)
         .build();
   }
 
@@ -155,6 +159,19 @@ public class QuestionMapper {
         .likesCount((long) subQuestion.getLikes().size())
         .createdAt(subQuestion.getCreatedAt())
         .updatedAt(subQuestion.getUpdatedAt())
+        .build();
+  }
+
+  public static SubQuestionWithoutCommentsDto mapSubQuestionToDtoWithoutComments(
+      SubQuestion subQuestion, Boolean isLikedByCurrentUser) {
+    return SubQuestionWithoutCommentsDto.builder()
+        .id(subQuestion.getId())
+        .title(subQuestion.getTitle())
+        .commentsCount((long) subQuestion.getComments().size())
+        .likesCount((long) subQuestion.getLikes().size())
+        .createdAt(subQuestion.getCreatedAt())
+        .updatedAt(subQuestion.getUpdatedAt())
+        .isLikedByCurrentUser(isLikedByCurrentUser)
         .build();
   }
 

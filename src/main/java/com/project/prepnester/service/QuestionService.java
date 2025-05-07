@@ -2,6 +2,7 @@ package com.project.prepnester.service;
 
 import static com.project.prepnester.service.mapper.QuestionMapper.mapQuestionDetailsToDto;
 import static com.project.prepnester.service.mapper.QuestionMapper.mapQuestionToDto;
+import static com.project.prepnester.util.SortingConverter.getSort;
 
 import com.project.prepnester.dto.request.CreateQuestionBodyRequest;
 import com.project.prepnester.dto.request.PageInfoDto;
@@ -21,6 +22,7 @@ import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.util.exceptions.NoPermissionException;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +30,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,11 +80,53 @@ public class QuestionService {
       );
     }
 
-    return questions.stream()
+    List<UUID> likedSubQuestionIds = questions.stream()
+        .flatMap(q -> q.getSubQuestions().stream())
+        .map(SubQuestion::getId).filter(id -> likeRepository.existsBySubQuestionIdAndUserId(id,
+            userIdService.getCurrentUserId())).toList();
+
+    List<QuestionDto> questionDtos = questions.stream()
         .map(question -> mapQuestionToDto(question,
             commentRepository.findAllByQuestionId(question.getId()),
-            likeRepository.findAllByQuestionId(question.getId())))
+            likeRepository.findAllByQuestionId(question.getId()),
+            likeRepository.existsByQuestionIdAndUserId(
+                question.getId(),
+                userIdService.getCurrentUserId()
+            ),
+            likedSubQuestionIds))
         .toList();
+
+    Comparator<QuestionDto> byTotalLikes = Comparator.comparingLong(dto -> {
+      Long totalLikes = dto.getLikesCount();
+      for (Object sub : dto.getSubQuestions()) {
+        if (sub instanceof QuestionDto subDto) {
+          totalLikes += subDto.getLikesCount();
+        }
+      }
+      return totalLikes;
+    });
+
+    Comparator<QuestionDto> byTotalComments = Comparator.comparingLong(dto -> {
+      Long totalComments = dto.getCommentsCount();
+      for (Object sub : dto.getSubQuestions()) {
+        if (sub instanceof QuestionDto subDto) {
+          totalComments += subDto.getCommentsCount();
+        }
+      }
+      return totalComments;
+    });
+
+    if (sortBy == SortBy.MOST_LIKED) {
+      questionDtos = questionDtos.stream()
+          .sorted(byTotalLikes.reversed())
+          .toList();
+    } else if (sortBy == SortBy.MOST_COMMENTED) {
+      questionDtos = questionDtos.stream()
+          .sorted(byTotalComments.reversed())
+          .toList();
+    }
+
+    return questionDtos;
   }
 
 
@@ -150,7 +193,7 @@ public class QuestionService {
     }
 
     saved.setSubQuestions(subQuestions);
-    return mapQuestionToDto(saved, List.of(), List.of());
+    return mapQuestionToDto(saved, List.of(), List.of(), false, List.of());
   }
 
   public QuestionDto updateQuestion(UUID questionId, UpdateQuestionBodyRequest body) {
@@ -167,9 +210,17 @@ public class QuestionService {
     question.setIsPublic(body.getIsPublic());
     question.setUpdatedAt(LocalDateTime.now());
 
+    List<UUID> likedSubQuestionIds = question.getSubQuestions().stream()
+        .map(SubQuestion::getId).filter(id -> likeRepository.existsBySubQuestionIdAndUserId(id,
+            userIdService.getCurrentUserId())).toList();
+
     return mapQuestionToDto(questionRepository.save(question),
         commentRepository.findAllByQuestionId(questionId),
-        likeRepository.findAllByQuestionId(questionId));
+        likeRepository.findAllByQuestionId(questionId),
+        likeRepository.existsByQuestionIdAndUserId(
+            questionId,
+            userIdService.getCurrentUserId()
+        ), likedSubQuestionIds);
   }
 
 
@@ -183,16 +234,5 @@ public class QuestionService {
       throw new NoPermissionException("User doesn't have permission to update this question");
     }
     questionRepository.delete(question);
-  }
-
-  private Sort getSort(SortBy sortBy) {
-    return switch (sortBy) {
-      case ASCENDING -> Sort.by(Sort.Direction.ASC, "title");
-      case DESCENDING -> Sort.by(Sort.Direction.DESC, "title");
-      case RECENTLY_CREATED -> Sort.by(Sort.Direction.DESC, "createdAt");
-      case RECENTLY_UPDATED -> Sort.by(Sort.Direction.DESC, "updatedAt");
-      case MOST_LIKED -> Sort.unsorted();
-      case MOST_COMMENTED -> Sort.unsorted();
-    };
   }
 }

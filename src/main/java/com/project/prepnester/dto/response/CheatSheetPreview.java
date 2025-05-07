@@ -30,5 +30,7 @@ public class CheatSheetPreview {
   private UUID createdBy;
 
   private UUID updatedBy;
+
+  private Boolean isLikedByCurrentUser;
 }
 

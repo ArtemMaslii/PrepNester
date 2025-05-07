@@ -179,22 +179,22 @@ public class QuestionController {
 
   @DeleteMapping({"/{id}/like"})
   public ResponseEntity<Void> removeLikeQuestion(@PathVariable UUID id,
-      @RequestBody UserIdDto user) {
-    likeService.removeQuestionLike(id, user.getUserId());
+      @RequestParam UUID userId) {
+    likeService.removeQuestionLike(id, userId);
     return ResponseEntity.ok().build();
   }
 
   @DeleteMapping({"/sub-questions/{id}/like"})
   public ResponseEntity<Void> removeLikeSubQuestion(@PathVariable UUID id,
-      @RequestBody UserIdDto user) {
-    likeService.removeSubQuestionLike(id, user.getUserId());
+      @RequestParam UUID userId) {
+    likeService.removeSubQuestionLike(id, userId);
     return ResponseEntity.ok().build();
   }
 
   @DeleteMapping({"/comments/{id}/like"})
   public ResponseEntity<Void> removeLikeComment(@PathVariable UUID id,
-      @RequestBody UserIdDto user) {
-    likeService.removeCommentLike(id, user.getUserId());
+      @RequestParam UUID userId) {
+    likeService.removeCommentLike(id, userId);
     return ResponseEntity.ok().build();
   }
 }

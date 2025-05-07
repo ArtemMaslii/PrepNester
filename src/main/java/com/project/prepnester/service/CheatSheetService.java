@@ -1,12 +1,16 @@
 package com.project.prepnester.service;
 
+import static com.project.prepnester.util.SortingConverter.getSort;
+
 import com.project.prepnester.dto.request.CategoryWithQuestionsRequestDto;
 import com.project.prepnester.dto.request.CheatSheetRequestDto;
+import com.project.prepnester.dto.request.PageInfoDto;
 import com.project.prepnester.dto.request.QuestionIdsRequestDto;
 import com.project.prepnester.dto.response.CategoryWithQuestionsDto;
 import com.project.prepnester.dto.response.CheatSheetDto;
 import com.project.prepnester.dto.response.CheatSheetPreview;
 import com.project.prepnester.dto.response.QuestionWithoutCategoryDto;
+import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.model.content.Category;
 import com.project.prepnester.model.content.CheatSheet;
 import com.project.prepnester.model.content.Question;
@@ -19,11 +23,14 @@ import com.project.prepnester.service.mapper.QuestionMapper;
 import com.project.prepnester.util.exceptions.NoPermissionException;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,14 +52,21 @@ public class CheatSheetService {
 
   private final CommentRepository commentRepository;
 
-  public List<CheatSheetPreview> getCheatSheets(String search) {
+  public List<CheatSheetPreview> getCheatSheets(PageInfoDto pageInfoDto, SortBy sortBy,
+      Boolean isPublic, String search) {
+    Pageable pageable = PageRequest.of(
+        pageInfoDto.getPage(),
+        pageInfoDto.getSize(),
+        getSort(sortBy)
+    );
+
     log.info("Fetching all cheat sheets from the database");
 
     List<CheatSheet> cheatSheets = search == null || search.isEmpty()
-        ? cheatSheetRepository.findAll()
-        : cheatSheetRepository.findAllByTitleContainingIgnoreCase(search);
+        ? cheatSheetRepository.findAllByIsPublic(isPublic, pageable)
+        : cheatSheetRepository.findAllByIsPublicAndTitleContainingIgnoreCase(isPublic, search);
 
-    return cheatSheets
+    List<CheatSheetPreview> cheatSheetPreviews = cheatSheets
         .stream()
         .map(cheatSheet -> CheatSheetPreview.builder()
             .id(cheatSheet.getId())
@@ -69,8 +83,29 @@ public class CheatSheetService {
             .updatedAt(cheatSheet.getUpdatedAt())
             .createdBy(cheatSheet.getCreatedBy())
             .updatedBy(cheatSheet.getUpdatedBy())
+            .isLikedByCurrentUser(
+                likeRepository.existsByCheatSheetIdAndUserId(cheatSheet.getId(),
+                    userIdService.getCurrentUserId()))
             .build())
         .toList();
+
+    Comparator<CheatSheetPreview> byTotalLikes = Comparator.comparingLong(
+        CheatSheetPreview::getLikesCount);
+
+    Comparator<CheatSheetPreview> byTotalComments = Comparator.comparingLong(
+        CheatSheetPreview::getCommentsCount);
+
+    if (sortBy == SortBy.MOST_LIKED) {
+      cheatSheetPreviews = cheatSheetPreviews.stream()
+          .sorted(byTotalLikes.reversed())
+          .toList();
+    } else if (sortBy == SortBy.MOST_COMMENTED) {
+      cheatSheetPreviews = cheatSheetPreviews.stream()
+          .sorted(byTotalComments.reversed())
+          .toList();
+    }
+
+    return cheatSheetPreviews;
   }
 
   public CheatSheetDto getCheatSheetById(UUID id) {
@@ -219,4 +254,6 @@ public class CheatSheetService {
 
     return Pair.of(categories, questions);
   }
+
+
 }

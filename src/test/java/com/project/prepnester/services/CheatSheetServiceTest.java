@@ -1,5 +1,6 @@
 package com.project.prepnester.services;
 
+import static com.project.prepnester.util.SortingConverter.getSort;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
@@ -7,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.project.prepnester.dto.request.CheatSheetRequestDto;
+import com.project.prepnester.dto.request.PageInfoDto;
+import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.model.content.CheatSheet;
 import com.project.prepnester.repository.CategoryRepository;
 import com.project.prepnester.repository.CheatSheetRepository;
@@ -28,6 +31,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 class CheatSheetServiceTest {
@@ -75,16 +80,23 @@ class CheatSheetServiceTest {
         .updatedBy(userId)
         .build();
 
-    when(cheatSheetRepository.findAll()).thenReturn(List.of(cheatSheet));
+    Pageable pageable = PageRequest.of(
+        0,
+        10,
+        getSort(SortBy.ASCENDING)
+    );
+
+    when(cheatSheetRepository.findAllByIsPublic(true, pageable)).thenReturn(List.of(cheatSheet));
     when(likeRepository.findAllByCheatSheetId(cheatSheetId)).thenReturn(Collections.emptyList());
 
     // when
-    var result = cheatSheetService.getCheatSheets(null);
+    var result = cheatSheetService.getCheatSheets(new PageInfoDto(0, 10), SortBy.ASCENDING, true,
+        null);
 
     // then
     assertThat(result).hasSize(1);
     assertThat(result.get(0).getId()).isEqualTo(cheatSheetId);
-    verify(cheatSheetRepository).findAll();
+    verify(cheatSheetRepository).findAllByIsPublic(true, pageable);
   }
 
   @Test

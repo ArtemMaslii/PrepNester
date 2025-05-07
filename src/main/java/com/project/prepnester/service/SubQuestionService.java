@@ -76,7 +76,11 @@ public class SubQuestionService {
     subQuestion.setUpdatedAt(LocalDateTime.now());
 
     subQuestion = subQuestionRepository.save(subQuestion);
-    return mapSubQuestionToDtoWithoutComments(subQuestion);
+    return mapSubQuestionToDtoWithoutComments(subQuestion,
+        likeRepository.existsBySubQuestionIdAndUserId(
+            subQuestion.getId(),
+            userIdService.getCurrentUserId()
+        ));
   }
 
   public void deleteSubQuestion(UUID subQuestionId) {

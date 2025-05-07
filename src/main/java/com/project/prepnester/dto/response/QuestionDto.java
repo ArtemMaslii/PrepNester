@@ -31,4 +31,6 @@ public class QuestionDto {
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
+
+  private Boolean isLikedByCurrentUser;
 }
