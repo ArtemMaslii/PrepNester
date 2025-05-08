@@ -1,6 +1,7 @@
 package com.project.prepnester.dto.request;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +18,6 @@ public class CheatSheetRequestDto {
   private Boolean isPublic;
 
   private List<CategoryWithQuestionsRequestDto> categories;
+
+  private UUID createdBy;
 }

@@ -142,6 +142,7 @@ class CheatSheetServiceTest {
         .title("New CheatSheet")
         .isPublic(true)
         .categories(Collections.emptyList())
+        .createdBy(userId)
         .build();
 
     UUID savedId = UUID.randomUUID();
@@ -155,8 +156,7 @@ class CheatSheetServiceTest {
         .updatedAt(LocalDateTime.now())
         .createdBy(userId)
         .build();
-
-    when(userIdService.getCurrentUserId()).thenReturn(userId);
+    
     when(cheatSheetRepository.save(any(CheatSheet.class))).thenReturn(savedCheatSheet);
 
     // when

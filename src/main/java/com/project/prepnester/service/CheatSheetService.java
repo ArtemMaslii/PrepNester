@@ -138,7 +138,7 @@ public class CheatSheetService {
         .isPublic(body.getIsPublic())
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
-        .createdBy(userIdService.getCurrentUserId())
+        .createdBy(body.getCreatedBy())
         .updatedBy(null)
         .build();
 
