@@ -126,7 +126,7 @@ public class CheatSheetService {
         .build();
   }
 
-  public CheatSheetDto createCheatSheet(CheatSheetRequestDto body) {
+  public CheatSheetPreview createCheatSheet(CheatSheetRequestDto body) {
     log.info("Creating a new cheat sheet from body: {}", body);
 
     Pair<List<Category>, List<Question>> data = extractCategoriesAndQuestions(body);
@@ -144,15 +144,20 @@ public class CheatSheetService {
 
     CheatSheet saved = cheatSheetRepository.save(cheatSheet);
 
-    return CheatSheetDto.builder()
-        .id(cheatSheet.getId())
-        .title(cheatSheet.getTitle())
-        .isPublic(cheatSheet.getIsPublic())
-        .categories(getCheatSheetsCategories(saved))
-        .createdAt(cheatSheet.getCreatedAt())
-        .updatedAt(cheatSheet.getUpdatedAt())
-        .createdBy(cheatSheet.getCreatedBy())
-        .updatedBy(cheatSheet.getUpdatedBy())
+    return CheatSheetPreview.builder()
+        .id(saved.getId())
+        .title(saved.getTitle())
+        .isPublic(saved.getIsPublic())
+        .createdAt(saved.getCreatedAt())
+        .updatedAt(saved.getUpdatedAt())
+        .createdBy(saved.getCreatedBy())
+        .updatedBy(saved.getUpdatedBy())
+        .likesCount((long) likeRepository.findAllByCheatSheetId(cheatSheet.getId()).size())
+        .commentsCount(saved.getQuestions().stream()
+            .mapToLong(question -> commentRepository.findAllByQuestionId(question.getId())
+                .size())
+            .sum())
+        .isLikedByCurrentUser(false)
         .build();
   }
 

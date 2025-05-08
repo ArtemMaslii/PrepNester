@@ -49,9 +49,9 @@ public class CheatSheetController {
   }
 
   @PostMapping
-  public ResponseEntity<CheatSheetDto> createCheatSheet(
+  public ResponseEntity<CheatSheetPreview> createCheatSheet(
       @RequestBody CheatSheetRequestDto cheatSheetRequestDto) {
-    CheatSheetDto cheatSheetDto = cheatSheetService.createCheatSheet(cheatSheetRequestDto);
+    CheatSheetPreview cheatSheetDto = cheatSheetService.createCheatSheet(cheatSheetRequestDto);
     return ResponseEntity.status(HttpStatus.CREATED).body(cheatSheetDto);
   }
 
