@@ -12,6 +12,7 @@ import com.project.prepnester.model.content.Comment;
 import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
 import com.project.prepnester.repository.CommentRepository;
+import com.project.prepnester.repository.LikeRepository;
 import com.project.prepnester.repository.QuestionRepository;
 import com.project.prepnester.repository.SubQuestionRepository;
 import com.project.prepnester.util.exceptions.NoPermissionException;
@@ -35,6 +36,8 @@ public class CommentService {
   private final SubQuestionRepository subQuestionRepository;
 
   private final CommentRepository commentRepository;
+
+  private final LikeRepository likeRepository;
 
   private final UserIdService userIdService;
 
@@ -86,7 +89,7 @@ public class CommentService {
 
     Comment saved = commentRepository.save(commentToSave);
 
-    return mapQuestionCommentToReplyDto(saved);
+    return mapQuestionCommentToReplyDto(saved, likeRepository.findAllByCommentId(saved.getId()));
   }
 
   public CommentSubQuestionDto updateSubQuestionComment(UUID commentId,
@@ -121,7 +124,8 @@ public class CommentService {
     comment.setMessage(body.getMessage());
     comment.setUpdatedBy(body.getUpdatedBy());
 
-    return mapQuestionCommentToReplyDto(commentRepository.save(comment));
+    return mapQuestionCommentToReplyDto(commentRepository.save(comment),
+        likeRepository.findAllByCommentId(commentId));
   }
 
   public void deleteComment(UUID commentId) {

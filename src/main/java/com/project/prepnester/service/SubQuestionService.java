@@ -78,12 +78,18 @@ public class SubQuestionService {
           return user.getFullName();
         }));
 
+    Map<UUID, Boolean> likesCommentIds = comments.stream()
+        .collect(Collectors.toMap(Comment::getId,
+            comment -> likeRepository.existsByCommentIdAndUserId(comment.getId(),
+                userIdService.getCurrentUserId())));
+
     return mapSubQuestionToDto(subQuestion, createdBy, updatedBy,
         commentRepository.findAllBySubQuestionId(subQuestionId),
         userNamesByIdCreated,
         userNamesByIdUpdated,
         likeRepository.findAllBySubQuestionId(
-            subQuestionId));
+            subQuestionId),
+        likesCommentIds);
   }
 
   public SubQuestionDto updateSubQuestion(UUID subQuestionId,
@@ -132,12 +138,18 @@ public class SubQuestionService {
           return user.getFullName();
         }));
 
+    Map<UUID, Boolean> likesCommentIds = comments.stream()
+        .collect(Collectors.toMap(Comment::getId,
+            comment -> likeRepository.existsByCommentIdAndUserId(comment.getId(),
+                userIdService.getCurrentUserId())));
+
     return mapSubQuestionToDto(subQuestion, createdBy, updatedBy,
         commentRepository.findAllBySubQuestionId(subQuestionId),
         userNamesByIdCreated,
         userNamesByIdUpdated,
         likeRepository.findAllBySubQuestionId(
-            subQuestionId));
+            subQuestionId),
+        likesCommentIds);
   }
 
   public void deleteSubQuestion(UUID subQuestionId) {

@@ -13,6 +13,8 @@ public interface LikeRepository extends JpaRepository<Like, UUID> {
 
   List<Like> findAllByCheatSheetId(UUID cheatSheetId);
 
+  List<Like> findAllByCommentId(UUID commentId);
+
   Like findByQuestionIdAndUserId(UUID questionId, UUID userId);
 
   Like findByCheatSheetIdAndUserId(UUID cheatSheetId, UUID userId);
@@ -34,4 +36,6 @@ public interface LikeRepository extends JpaRepository<Like, UUID> {
   Boolean existsByQuestionIdAndUserId(UUID questionId, UUID userId);
 
   Boolean existsBySubQuestionIdAndUserId(UUID subQuestionId, UUID userId);
+
+  Boolean existsByCommentIdAndUserId(UUID commentId, UUID userId);
 }

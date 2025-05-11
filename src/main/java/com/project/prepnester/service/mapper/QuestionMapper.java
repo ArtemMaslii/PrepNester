@@ -17,7 +17,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class QuestionMapper {
 
   public static QuestionDto mapQuestionToDto(Question question, List<Comment> comments,
@@ -41,10 +43,16 @@ public class QuestionMapper {
         .build();
   }
 
-  public static QuestionDetailsDto mapQuestionDetailsToDto(Question question, String createdBy,
+  public static QuestionDetailsDto mapQuestionDetailsToDto(
+      Question question,
+      String createdBy,
       String updatedBy,
-      List<Comment> comments, Map<UUID, String> userNamesByIdCreated,
-      Map<UUID, String> userNamesByIdUpdated, List<Like> likes) {
+      List<Comment> comments,
+      Map<UUID, String> userNamesByIdCreated,
+      Map<UUID, String> userNamesByIdUpdated,
+      List<Like> likes,
+      Map<UUID, Boolean> likesCommentIds
+  ) {
     return QuestionDetailsDto.builder()
         .id(question.getId())
         .title(question.getTitle())
@@ -95,6 +103,7 @@ public class QuestionMapper {
                             .toList()
                             : List.of()
                     )
+                    .isLikedByCurrentUser(likesCommentIds.get(comment.getId()))
                     .build())
                 .toList()
         )
@@ -106,10 +115,15 @@ public class QuestionMapper {
         .build();
   }
 
-  public static SubQuestionDto mapSubQuestionToDto(SubQuestion subQuestion, String createdBy,
-      String updatedBy, List<Comment> comments, Map<UUID, String> userNamesByCreated,
+  public static SubQuestionDto mapSubQuestionToDto(
+      SubQuestion subQuestion,
+      String createdBy,
+      String updatedBy, List<Comment> comments,
+      Map<UUID, String> userNamesByCreated,
       Map<UUID, String> userNamesByIdUpdated,
-      List<Like> likes) {
+      List<Like> likes,
+      Map<UUID, Boolean> likesCommentIds
+  ) {
     return SubQuestionDto.builder()
         .id(subQuestion.getId())
         .title(subQuestion.getTitle())
@@ -153,6 +167,7 @@ public class QuestionMapper {
                             .toList()
                             : List.of()
                     )
+                    .isLikedByCurrentUser(likesCommentIds.get(comment.getId()))
                     .build())
                 .toList())
         .likesCount((long) likes.size())
@@ -216,7 +231,7 @@ public class QuestionMapper {
         .build();
   }
 
-  public static CommentQuestionDto mapQuestionCommentToReplyDto(Comment comment) {
+  public static CommentQuestionDto mapQuestionCommentToReplyDto(Comment comment, List<Like> likes) {
     return CommentQuestionDto.builder()
         .id(comment.getId())
         .message(comment.getMessage())
@@ -226,7 +241,7 @@ public class QuestionMapper {
         .parentId(comment.getParent() != null
             ? comment.getParent().getId()
             : null)
-        .likesCount((long) comment.getLikes().size())
+        .likesCount((long) likes.size())
         .createdAt(comment.getCreatedAt())
         .createdBy(comment.getCreatedBy())
         .updatedAt(comment.getUpdatedAt())

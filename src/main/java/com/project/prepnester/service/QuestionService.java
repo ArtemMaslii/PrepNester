@@ -159,24 +159,35 @@ public class QuestionService {
     List<Comment> comments = commentRepository.findAllByQuestionId(questionId);
 
     Map<UUID, String> userNamesByIdCreated = comments.stream()
-        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
-          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
-              .orElseThrow(() -> new NotFoundException("User not found"));
-          return user.getFullName();
-        }));
+        .collect(Collectors.toMap(
+            Comment::getCreatedBy,
+            comment -> userRepository.findById(comment.getCreatedBy())
+                .orElseThrow(() -> new NotFoundException("User not found"))
+                .getFullName(),
+            (existing, replacement) -> existing
+        ));
 
     Map<UUID, String> userNamesByIdUpdated = comments.stream()
-        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
-          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
-              .orElseThrow(() -> new NotFoundException("User not found"));
-          return user.getFullName();
-        }));
+        .filter(comment -> comment.getUpdatedBy() != null)
+        .collect(Collectors.toMap(
+            Comment::getUpdatedBy,
+            comment -> userRepository.findById(comment.getUpdatedBy())
+                .orElseThrow(() -> new NotFoundException("User not found"))
+                .getFullName(),
+            (existing, replacement) -> existing
+        ));
+
+    Map<UUID, Boolean> likesCommentIds = comments.stream()
+        .collect(Collectors.toMap(Comment::getId,
+            comment -> likeRepository.existsByCommentIdAndUserId(comment.getId(),
+                userIdService.getCurrentUserId())));
 
     return mapQuestionDetailsToDto(question, createdBy, updatedBy,
         commentRepository.findAllByQuestionId(questionId), userNamesByIdCreated,
         userNamesByIdUpdated,
         likeRepository.findAllByQuestionId(
-            questionId));
+            questionId),
+        likesCommentIds);
   }
 
 
@@ -263,11 +274,17 @@ public class QuestionService {
           return user.getFullName();
         }));
 
+    Map<UUID, Boolean> likesCommentIds = comments.stream()
+        .collect(Collectors.toMap(Comment::getId,
+            comment -> likeRepository.existsByCommentIdAndUserId(comment.getId(),
+                userIdService.getCurrentUserId())));
+
     return mapQuestionDetailsToDto(question, createdBy, updatedBy,
         commentRepository.findAllByQuestionId(questionId), userNamesByIdCreated,
         userNamesByIdUpdated,
         likeRepository.findAllByQuestionId(
-            questionId));
+            questionId),
+        likesCommentIds);
   }
 
 

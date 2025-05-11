@@ -37,4 +37,6 @@ public class CommentDto {
   private String updatedByName;
 
   private List<CommentReplyDto> replies;
+
+  private boolean isLikedByCurrentUser;
 }
