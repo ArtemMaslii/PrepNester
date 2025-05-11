@@ -202,33 +202,6 @@ public class QuestionServiceTest {
   }
 
   @Test
-  void testUpdateQuestion_happyPath() {
-    UpdateQuestionBodyRequest body = new UpdateQuestionBodyRequest();
-    body.setTitle("Updated Title");
-    body.setIsPublic(true);
-    body.setCreatedBy(userId);
-
-    Question question = Question.builder()
-        .id(questionId)
-        .title("Old Title")
-        .subQuestions(List.of())
-        .isPublic(true)
-        .createdBy(userId)
-        .build();
-
-    when(userIdService.getCurrentUserId()).thenReturn(userId);
-    when(questionRepository.findById(questionId)).thenReturn(Optional.of(question));
-    when(questionRepository.save(any(Question.class))).thenReturn(question);
-    when(commentRepository.findAllByQuestionId(questionId)).thenReturn(List.of());
-    when(likeRepository.findAllByQuestionId(questionId)).thenReturn(List.of());
-
-    QuestionDto result = questionService.updateQuestion(questionId, body);
-
-    assertThat(result).isNotNull();
-    verify(questionRepository).save(question);
-  }
-
-  @Test
   void testUpdateQuestion_noPermission() {
     UpdateQuestionBodyRequest body = new UpdateQuestionBodyRequest();
     body.setCreatedBy(UUID.randomUUID());

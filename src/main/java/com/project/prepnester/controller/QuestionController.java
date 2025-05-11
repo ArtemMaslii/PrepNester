@@ -12,7 +12,6 @@ import com.project.prepnester.dto.response.CommentSubQuestionDto;
 import com.project.prepnester.dto.response.QuestionDetailsDto;
 import com.project.prepnester.dto.response.QuestionDto;
 import com.project.prepnester.dto.response.SubQuestionDto;
-import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
 import com.project.prepnester.model.common.SortBy;
 import com.project.prepnester.service.CommentService;
 import com.project.prepnester.service.LikeService;
@@ -89,19 +88,19 @@ public class QuestionController {
   }
 
   @PutMapping("/{questionId}")
-  public ResponseEntity<QuestionDto> updateQuestion(@PathVariable UUID questionId,
+  public ResponseEntity<QuestionDetailsDto> updateQuestion(@PathVariable UUID questionId,
       @RequestBody @Valid UpdateQuestionBodyRequest body) {
 
-    QuestionDto updatedQuestion = questionService.updateQuestion(questionId, body);
+    QuestionDetailsDto updatedQuestion = questionService.updateQuestion(questionId, body);
     return ResponseEntity.ok(updatedQuestion);
   }
 
   @PutMapping("/sub-questions/{subQuestionId}")
-  public ResponseEntity<SubQuestionWithoutCommentsDto> updateSubQuestion(
+  public ResponseEntity<SubQuestionDto> updateSubQuestion(
       @PathVariable UUID subQuestionId,
       @RequestBody SubQuestionDtoRequest subQuestionDtoRequest) {
 
-    SubQuestionWithoutCommentsDto updatedSubQuestion = subQuestionService.updateSubQuestion(
+    SubQuestionDto updatedSubQuestion = subQuestionService.updateSubQuestion(
         subQuestionId,
         subQuestionDtoRequest);
     return ResponseEntity.ok(updatedSubQuestion);

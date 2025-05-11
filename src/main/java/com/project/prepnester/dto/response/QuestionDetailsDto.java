@@ -26,6 +26,8 @@ public class QuestionDetailsDto {
 
   private List<CommentDto> comments;
 
+  private Long likesCount;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

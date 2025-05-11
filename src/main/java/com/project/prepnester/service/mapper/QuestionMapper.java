@@ -15,6 +15,7 @@ import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class QuestionMapper {
@@ -42,7 +43,8 @@ public class QuestionMapper {
 
   public static QuestionDetailsDto mapQuestionDetailsToDto(Question question, String createdBy,
       String updatedBy,
-      List<Comment> comments) {
+      List<Comment> comments, Map<UUID, String> userNamesByIdCreated,
+      Map<UUID, String> userNamesByIdUpdated, List<Like> likes) {
     return QuestionDetailsDto.builder()
         .id(question.getId())
         .title(question.getTitle())
@@ -63,9 +65,11 @@ public class QuestionMapper {
                         : null)
                     .likesCount((long) comment.getLikes().size())
                     .createdAt(comment.getCreatedAt())
-                    .createdBy(comment.getCreatedBy())
+                    .createdBy(comment.getId())
+                    .createdByName(userNamesByIdCreated.get(comment.getCreatedBy()))
                     .updatedAt(comment.getUpdatedAt())
                     .updatedBy(comment.getUpdatedBy())
+                    .updatedByName(userNamesByIdUpdated.get(comment.getUpdatedBy()))
                     .replies(
                         comment.getReplies() != null
                             ? comment.getReplies().stream()
@@ -81,10 +85,12 @@ public class QuestionMapper {
                                 .likesCount((long) reply.getLikes().size())
                                 .createdAt(reply.getCreatedAt())
                                 .createdBy(reply.getCreatedBy())
+                                .createdByName(userNamesByIdCreated.get(reply.getCreatedBy()))
                                 .updatedAt(reply.getUpdatedAt())
                                 .updatedBy(reply.getUpdatedBy() != null
                                     ? reply.getUpdatedBy()
                                     : null)
+                                .updatedByName(userNamesByIdUpdated.get(reply.getUpdatedBy()))
                                 .build())
                             .toList()
                             : List.of()
@@ -92,6 +98,7 @@ public class QuestionMapper {
                     .build())
                 .toList()
         )
+        .likesCount((long) likes.size())
         .createdAt(question.getCreatedAt())
         .updatedAt(question.getUpdatedAt())
         .createdByName(createdBy)
@@ -100,7 +107,9 @@ public class QuestionMapper {
   }
 
   public static SubQuestionDto mapSubQuestionToDto(SubQuestion subQuestion, String createdBy,
-      String updatedBy, List<Comment> comments, List<Like> likes) {
+      String updatedBy, List<Comment> comments, Map<UUID, String> userNamesByCreated,
+      Map<UUID, String> userNamesByIdUpdated,
+      List<Like> likes) {
     return SubQuestionDto.builder()
         .id(subQuestion.getId())
         .title(subQuestion.getTitle())
@@ -115,8 +124,10 @@ public class QuestionMapper {
                     .likesCount((long) comment.getLikes().size())
                     .createdAt(comment.getCreatedAt())
                     .createdBy(comment.getCreatedBy())
+                    .createdByName(userNamesByCreated.get(comment.getCreatedBy()))
                     .updatedAt(comment.getUpdatedAt())
                     .updatedBy(comment.getUpdatedBy())
+                    .updatedByName(userNamesByIdUpdated.get(comment.getUpdatedBy()))
                     .replies(
                         comment.getReplies() != null
                             ? comment.getReplies().stream()
@@ -132,10 +143,12 @@ public class QuestionMapper {
                                 .likesCount((long) reply.getLikes().size())
                                 .createdAt(reply.getCreatedAt())
                                 .createdBy(reply.getCreatedBy())
+                                .createdByName(userNamesByCreated.get(reply.getCreatedBy()))
                                 .updatedAt(reply.getUpdatedAt())
                                 .updatedBy(reply.getUpdatedBy() != null
                                     ? reply.getUpdatedBy()
                                     : null)
+                                .updatedByName(userNamesByIdUpdated.get(reply.getUpdatedBy()))
                                 .build())
                             .toList()
                             : List.of()

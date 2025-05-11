@@ -89,10 +89,6 @@ class QuestionControllerApiTest extends BaseTest {
     String updateQuestionRequestBody = """
         {
              "title": "How does sort in Snowflake work V3?",
-             "category": {
-                 "title": "Algorithms"
-             },
-             "isPublic": true,
              "createdBy": "a1f42067-8f71-4be1-bc9d-95adf4f5c423"
          }
         """;

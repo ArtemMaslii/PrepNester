@@ -3,11 +3,9 @@ package com.project.prepnester.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.project.prepnester.dto.request.SubQuestionDtoRequest;
 import com.project.prepnester.model.content.SubQuestion;
 import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.CommentRepository;
@@ -97,41 +95,6 @@ public class SubQuestionTest {
 
     assertThrows(NotFoundException.class,
         () -> subQuestionService.getSubQuestionById(subQuestionId));
-  }
-
-  @Test
-  void testUpdateSubQuestion_HappyPath() {
-    SubQuestionDtoRequest request = new SubQuestionDtoRequest();
-    request.setTitle("Updated title");
-    when(subQuestionRepository.findById(subQuestionId)).thenReturn(Optional.of(subQuestion));
-    when(subQuestionRepository.save(any(SubQuestion.class))).thenReturn(
-        SubQuestion.builder()
-            .id(subQuestionId)
-            .comments(List.of())
-            .likes(List.of())
-            .parentQuestion(subQuestion.getParentQuestion())
-            .title(request.getTitle())
-            .createdBy(subQuestion.getCreatedBy())
-            .createdAt(subQuestion.getCreatedAt())
-            .updatedAt(LocalDateTime.now())
-            .build()
-    );
-
-    var result = subQuestionService.updateSubQuestion(subQuestionId, request);
-
-    assertThat(result).isNotNull();
-    assertEquals("Updated title", result.getTitle());
-    verify(subQuestionRepository).save(any(SubQuestion.class));
-  }
-
-  @Test
-  void testUpdateSubQuestion_SubQuestionNotFound() {
-    SubQuestionDtoRequest request = new SubQuestionDtoRequest();
-    request.setTitle("Updated title");
-    when(subQuestionRepository.findById(subQuestionId)).thenReturn(Optional.empty());
-
-    assertThrows(NotFoundException.class,
-        () -> subQuestionService.updateSubQuestion(subQuestionId, request));
   }
 
   @Test

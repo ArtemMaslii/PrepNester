@@ -43,7 +43,10 @@ VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423',
 -- changeset testdata:6
 INSERT INTO category (id, title)
 VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b', 'Algorithms'),
-       ('e36fdba0-f12d-4a51-83a9-60e37452a831', 'Data Structures');
+       ('e36fdba0-f12d-4a51-83a9-60e37452a831', 'Data Structures'),
+       ('e36fdba0-f12d-4a51-83a9-60e37452a832', 'Psychology'),
+       ('e36fdba0-f12d-4a51-83a9-60e37452a833', 'Intro'),
+       ('e36fdba0-f12d-4a51-83a9-60e37452a834', 'Outro');
 
 -- Question
 -- changeset testdata:7

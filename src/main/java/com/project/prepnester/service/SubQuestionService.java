@@ -1,12 +1,12 @@
 package com.project.prepnester.service;
 
 import static com.project.prepnester.service.mapper.QuestionMapper.mapSubQuestionToDto;
-import static com.project.prepnester.service.mapper.QuestionMapper.mapSubQuestionToDtoWithoutComments;
 
 import com.project.prepnester.dto.request.SubQuestionDtoRequest;
 import com.project.prepnester.dto.response.SubQuestionDto;
-import com.project.prepnester.dto.response.SubQuestionWithoutCommentsDto;
+import com.project.prepnester.model.content.Comment;
 import com.project.prepnester.model.content.SubQuestion;
+import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.CommentRepository;
 import com.project.prepnester.repository.LikeRepository;
 import com.project.prepnester.repository.SubQuestionRepository;
@@ -14,7 +14,10 @@ import com.project.prepnester.repository.UserRepository;
 import com.project.prepnester.util.exceptions.NoPermissionException;
 import com.project.prepnester.util.exceptions.NotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -59,15 +62,37 @@ public class SubQuestionService {
           .getFullName();
     }
 
+    List<Comment> comments = commentRepository.findAllByQuestionId(subQuestionId);
+
+    Map<UUID, String> userNamesByIdCreated = comments.stream()
+        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
+          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+              .orElseThrow(() -> new NotFoundException("User not found"));
+          return user.getFullName();
+        }));
+
+    Map<UUID, String> userNamesByIdUpdated = comments.stream()
+        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
+          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+              .orElseThrow(() -> new NotFoundException("User not found"));
+          return user.getFullName();
+        }));
+
     return mapSubQuestionToDto(subQuestion, createdBy, updatedBy,
         commentRepository.findAllBySubQuestionId(subQuestionId),
+        userNamesByIdCreated,
+        userNamesByIdUpdated,
         likeRepository.findAllBySubQuestionId(
             subQuestionId));
   }
 
-  public SubQuestionWithoutCommentsDto updateSubQuestion(UUID subQuestionId,
+  public SubQuestionDto updateSubQuestion(UUID subQuestionId,
       SubQuestionDtoRequest request) {
     log.info("Updating question with id: {} and title: {}", subQuestionId, request);
+
+    if (!userIdService.getCurrentUserId().equals(request.getCreatedBy())) {
+      throw new NoPermissionException("User doesn't have permission to update this question");
+    }
 
     SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
         .orElseThrow(() -> new NotFoundException("Sub-question not found"));
@@ -75,12 +100,44 @@ public class SubQuestionService {
     subQuestion.setTitle(request.getTitle());
     subQuestion.setUpdatedAt(LocalDateTime.now());
 
-    subQuestion = subQuestionRepository.save(subQuestion);
-    return mapSubQuestionToDtoWithoutComments(subQuestion,
-        likeRepository.existsBySubQuestionIdAndUserId(
-            subQuestion.getId(),
-            userIdService.getCurrentUserId()
-        ));
+    String createdBy = userRepository.findById(subQuestion.getCreatedBy())
+        .orElseThrow(
+            () -> new NotFoundException(
+                "User with id " + subQuestion.getCreatedBy() + " not found"))
+        .getFullName();
+
+    String updatedBy = null;
+
+    if (subQuestion.getUpdatedBy() != null) {
+      updatedBy = userRepository.findById(subQuestion.getUpdatedBy())
+          .orElseThrow(
+              () -> new NotFoundException(
+                  "User with id " + subQuestion.getUpdatedBy() + " not found"))
+          .getFullName();
+    }
+
+    List<Comment> comments = commentRepository.findAllByQuestionId(subQuestionId);
+
+    Map<UUID, String> userNamesByIdCreated = comments.stream()
+        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
+          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+              .orElseThrow(() -> new NotFoundException("User not found"));
+          return user.getFullName();
+        }));
+
+    Map<UUID, String> userNamesByIdUpdated = comments.stream()
+        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
+          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+              .orElseThrow(() -> new NotFoundException("User not found"));
+          return user.getFullName();
+        }));
+
+    return mapSubQuestionToDto(subQuestion, createdBy, updatedBy,
+        commentRepository.findAllBySubQuestionId(subQuestionId),
+        userNamesByIdCreated,
+        userNamesByIdUpdated,
+        likeRepository.findAllBySubQuestionId(
+            subQuestionId));
   }
 
   public void deleteSubQuestion(UUID subQuestionId) {

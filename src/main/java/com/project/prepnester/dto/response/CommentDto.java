@@ -30,7 +30,11 @@ public class CommentDto {
 
   private UUID createdBy;
 
+  private String createdByName;
+
   private UUID updatedBy;
+
+  private String updatedByName;
 
   private List<CommentReplyDto> replies;
 }

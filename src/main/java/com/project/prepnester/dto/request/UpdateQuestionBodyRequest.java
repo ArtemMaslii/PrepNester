@@ -1,9 +1,7 @@
 package com.project.prepnester.dto.request;
 
-import com.project.prepnester.dto.response.CategoryDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +15,5 @@ public class UpdateQuestionBodyRequest {
   @NotBlank(message = "Title is required")
   @NotEmpty(message = "Title cannot be empty")
   private String title;
-  @NotNull(message = "Description is required")
-  private CategoryDto category;
-  @NotNull(message = "isPublic flag is required")
-  private Boolean isPublic;
   private UUID createdBy;
 }
