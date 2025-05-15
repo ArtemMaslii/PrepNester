@@ -1,4 +1,4 @@
-package com.project.prepnester.dto.request;
+package com.project.prepnester.dto.response;
 
 import com.project.prepnester.model.interview.Status;
 import java.util.UUID;
@@ -7,17 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
-public class InterviewUpdateRequestDto {
+public class InterviewDetailsDto {
 
-  private CandidateUpdateRequestDto candidate;
+  private UUID id;
+
+  private CandidateDetailsDto candidate;
 
   private String openPosition;
 
-  private String departmentName;
+  private String department;
 
   private Status status;
 

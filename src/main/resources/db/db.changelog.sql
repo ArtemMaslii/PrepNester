@@ -33,30 +33,6 @@ CREATE TABLE user_roles
     FOREIGN KEY (role_id) REFERENCES role (id)
 );
 
--- User Experience
-CREATE TABLE user_experience
-(
-    id                UUID PRIMARY KEY,
-    user_id           UUID NOT NULL,
-    current_job_title TEXT,
-    position_prefix   TEXT,
-    created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user_details (id)
-);
-
--- User Education
-CREATE TABLE user_education
-(
-    id                       UUID PRIMARY KEY,
-    user_id                  UUID NOT NULL,
-    education_institute_name TEXT,
-    education_degree         TEXT,
-    created_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user_details (id)
-);
-
 -- Category
 CREATE TABLE category
 (
@@ -201,5 +177,5 @@ CREATE TABLE interview
     created_by      UUID,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES user_details (id),
-    FOREIGN KEY (candidate_id) REFERENCES candidate (id)
+    FOREIGN KEY (candidate_id) REFERENCES candidate (id) ON DELETE CASCADE
 );

@@ -50,6 +50,7 @@ public class CommentService {
     SubQuestion subQuestion = subQuestionRepository.findById(subQuestionId)
         .orElseThrow(() -> new NotFoundException("Sub question not found"));
     commentToSave.setSubQuestion(subQuestion);
+    commentToSave.setCreatedBy(body.getCreatedBy());
 
     if (body.getParentId() != null) {
       Comment parentComment = commentRepository.findById(body.getParentId())
@@ -76,6 +77,7 @@ public class CommentService {
     Question question = questionRepository.findById(questionId)
         .orElseThrow(() -> new NotFoundException("Sub question not found"));
     commentToSave.setQuestion(question);
+    commentToSave.setCreatedBy(body.getCreatedBy());
 
     if (body.getParentId() != null) {
       Comment parentComment = commentRepository.findById(body.getParentId())

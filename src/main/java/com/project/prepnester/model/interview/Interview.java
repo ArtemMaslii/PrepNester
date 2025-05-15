@@ -1,5 +1,6 @@
 package com.project.prepnester.model.interview;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,7 +29,7 @@ public class Interview {
   @GeneratedValue(generator = "UUID")
   private UUID id;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "candidate_id", nullable = false)
   private Candidate candidate;
 

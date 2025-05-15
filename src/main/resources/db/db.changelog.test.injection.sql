@@ -9,22 +9,6 @@ VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423', 'Alice Johnson', 'alice@example.
        ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b72', 'Bob Smith', 'bob@example.com',
         '$2a$10$o5kkXypxj7bWO31nbIG2L.UiuSbDdKY2otBS/3EfojclKeCa47zBe', '987654321', 'M');
 
--- User Experience
--- changeset testdata:2
-INSERT INTO user_experience (id, user_id, current_job_title, position_prefix)
-VALUES ('f15c8c70-3d31-4f23-a35c-285f5874be56', 'a1f42067-8f71-4be1-bc9d-95adf4f5c423',
-        'Software Engineer', 'Senior'),
-       ('77b1cfd3-ff9d-4265-b7a9-c6161b9fe466', 'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72',
-        'Data Analyst', 'Junior');
-
--- User Education
--- changeset testdata:3
-INSERT INTO user_education (id, user_id, education_institute_name, education_degree)
-VALUES ('d4fd75a3-05a4-47d3-9d2f-dac51f1f9f75', 'a1f42067-8f71-4be1-bc9d-95adf4f5c423', 'MIT',
-        'Computer Science'),
-       ('a28a9573-bc91-41ad-800b-bf24818b5d8f', 'db50f01e-2a8d-4be4-ae60-d9ad89fc4b72', 'Harvard',
-        'Data Science');
-
 -- Role
 -- changeset testdata:4
 INSERT INTO role (id, access_type)

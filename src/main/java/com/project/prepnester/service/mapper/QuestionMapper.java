@@ -73,7 +73,7 @@ public class QuestionMapper {
                         : null)
                     .likesCount((long) comment.getLikes().size())
                     .createdAt(comment.getCreatedAt())
-                    .createdBy(comment.getId())
+                    .createdBy(comment.getCreatedBy())
                     .createdByName(userNamesByIdCreated.get(comment.getCreatedBy()))
                     .updatedAt(comment.getUpdatedAt())
                     .updatedBy(comment.getUpdatedBy())
@@ -167,7 +167,9 @@ public class QuestionMapper {
                             .toList()
                             : List.of()
                     )
-                    .isLikedByCurrentUser(likesCommentIds.get(comment.getId()))
+                    .isLikedByCurrentUser(
+                        likesCommentIds.get(comment.getId()) != null ? likesCommentIds.get(
+                            comment.getId()) : false)
                     .build())
                 .toList())
         .likesCount((long) likes.size())

@@ -1,12 +1,10 @@
 package com.project.prepnester.controller;
 
-import com.project.prepnester.dto.request.CandidateRequestDto;
-import com.project.prepnester.dto.request.CandidateUpdateRequestDto;
+import com.project.prepnester.dto.request.InterviewCreateRequest;
 import com.project.prepnester.dto.request.InterviewUpdateRequestDto;
-import com.project.prepnester.dto.response.CandidateDto;
+import com.project.prepnester.dto.response.InterviewDetailsDto;
 import com.project.prepnester.dto.response.InterviewPreviewDto;
-import com.project.prepnester.model.interview.Interview;
-import com.project.prepnester.service.CandidateService;
+import com.project.prepnester.model.interview.Status;
 import com.project.prepnester.service.InterviewService;
 import java.util.List;
 import java.util.UUID;
@@ -27,28 +25,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("${custom.api.paths.v1}/interview")
 public class InterviewController {
 
-  private final CandidateService candidateService;
-
   private final InterviewService interviewService;
 
   @GetMapping
-  public List<InterviewPreviewDto> getAllInterviews() {
-    return interviewService.getAllInterviews();
+  public List<InterviewPreviewDto> getAllInterviews(
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String status
+  ) {
+    Status statusEnum = null;
+    if (status != null && !status.isEmpty()) {
+      statusEnum = Status.fromValue(status);
+    }
+    return interviewService.getAllInterviews(search, statusEnum);
   }
 
   @GetMapping("/{id}")
-  public Interview getInterviewById(@PathVariable UUID id) {
+  public InterviewDetailsDto getInterviewById(@PathVariable UUID id) {
     return interviewService.getInterviewById(id);
   }
 
   @PostMapping
-  public ResponseEntity<Interview> createInterview(
-      @RequestBody Interview interview) {
+  public ResponseEntity<InterviewDetailsDto> createInterview(
+      @RequestBody InterviewCreateRequest interview) {
     return ResponseEntity.ok(interviewService.saveInterview(interview));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Interview> updateInterview(
+  public ResponseEntity<InterviewDetailsDto> updateInterview(
       @PathVariable UUID id,
       @RequestBody InterviewUpdateRequestDto interview) {
     return ResponseEntity.ok(interviewService.updateInterview(id, interview));
@@ -57,29 +60,6 @@ public class InterviewController {
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteInterview(@PathVariable UUID id) {
     interviewService.deleteInterview(id);
-    return ResponseEntity.noContent().build();
-  }
-
-  @GetMapping("/candidate")
-  public CandidateDto getCandidateByEmail(@RequestParam String email) {
-    return candidateService.getCandidateByEmail(email);
-  }
-
-  @PostMapping("/candidate")
-  public ResponseEntity<CandidateDto> createCandidate(
-      @RequestBody CandidateRequestDto candidateDto) {
-    return ResponseEntity.ok(candidateService.createCandidate(candidateDto));
-  }
-
-  @PutMapping("/candidate")
-  public ResponseEntity<CandidateDto> updateCandidate(
-      @RequestBody CandidateUpdateRequestDto candidateDto) {
-    return ResponseEntity.ok(candidateService.updateCandidate(candidateDto));
-  }
-
-  @DeleteMapping("/candidate")
-  public ResponseEntity<Void> deleteCandidate(@RequestParam String email) {
-    candidateService.deleteCandidate(email);
     return ResponseEntity.noContent().build();
   }
 }
