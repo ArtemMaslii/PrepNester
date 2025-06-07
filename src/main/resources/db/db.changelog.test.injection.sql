@@ -7,7 +7,9 @@ VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423', 'Alice Johnson', 'alice@example.
         '$2a$10$.I3EBER.hGDpVDJ6ocOjF.0D1OLJqg9FvqbiQDAyEvT6TvnofMcIm', '123456789',
         'F'),
        ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b72', 'Bob Smith', 'bob@example.com',
-        '$2a$10$o5kkXypxj7bWO31nbIG2L.UiuSbDdKY2otBS/3EfojclKeCa47zBe', '987654321', 'M');
+        '$2a$10$o5kkXypxj7bWO31nbIG2L.UiuSbDdKY2otBS/3EfojclKeCa47zBe', '987654321', 'M'),
+       ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b84', 'Artem Maslii', 'mandarinka494@gmail.com',
+        '$2a$10$o5kkXypxj7bWO31nbIG2L.UiuSbDdKY2otBS/3EfojclKeCa47zBe', '37064143795', 'M');
 
 -- Role
 -- changeset testdata:4
@@ -15,12 +17,15 @@ INSERT INTO role (id, access_type)
 VALUES ('3ba02c1a-7cc4-4a2b-8d85-19394d8f7a32', 'CANDIDATE'),
        ('e11f5c72-0f8a-47b0-bb7a-72b52238a41d', 'ADMIN');
 
+
 -- User Role
 -- changeset testdata:5
 INSERT INTO user_roles (user_id, role_id)
 VALUES ('a1f42067-8f71-4be1-bc9d-95adf4f5c423',
         '3ba02c1a-7cc4-4a2b-8d85-19394d8f7a32'),
        ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b72',
+        'e11f5c72-0f8a-47b0-bb7a-72b52238a41d'),
+       ('db50f01e-2a8d-4be4-ae60-d9ad89fc4b84',
         'e11f5c72-0f8a-47b0-bb7a-72b52238a41d');
 
 -- Category

@@ -30,6 +30,8 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+  private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
   @Value("${spring.graphql.cors.allowed-origins}")
   private String[] allowedOrigins;
 
@@ -43,6 +45,9 @@ public class SecurityConfig {
             .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
             .anyRequest().authenticated()
+        )
+        .oauth2Login(oauth2 -> oauth2
+            .successHandler(oAuth2AuthenticationSuccessHandler)
         )
         .httpBasic(Customizer.withDefaults())
         .exceptionHandling(exception -> exception
