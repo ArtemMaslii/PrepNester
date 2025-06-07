@@ -1,4 +1,4 @@
-This repository represents the backend of application, which is foundation of application. In order to run application locally, follow steps below. NOTE: the backend service should be setup and run before going to https://github.com/ArtemMaslii/PrepNesterApp/edit/main/README.md
+This repository represents the backend of application, which is foundation of application. In order to run application locally, follow steps below. NOTE: the backend service should be setup and run before going to https://github.com/ArtemMaslii/PrepNesterApp
 
 
 
