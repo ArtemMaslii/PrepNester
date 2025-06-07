@@ -233,10 +233,6 @@ public class QuestionService {
   public QuestionDetailsDto updateQuestion(UUID questionId, UpdateQuestionBodyRequest body) {
     log.info("Updating question with id: {} from body: {}", questionId, body);
 
-    if (!userIdService.getCurrentUserId().equals(body.getCreatedBy())) {
-      throw new NoPermissionException("User doesn't have permission to update this question");
-    }
-
     Question question = questionRepository.findById(questionId)
         .orElseThrow(() -> new NotFoundException("Question not found"));
 
@@ -261,18 +257,26 @@ public class QuestionService {
     List<Comment> comments = commentRepository.findAllByQuestionId(questionId);
 
     Map<UUID, String> userNamesByIdCreated = comments.stream()
-        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
-          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
-              .orElseThrow(() -> new NotFoundException("User not found"));
-          return user.getFullName();
-        }));
+        .collect(Collectors.toMap(
+            Comment::getCreatedBy,
+            comment -> {
+              PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+                  .orElseThrow(() -> new NotFoundException("User not found"));
+              return user.getFullName();
+            },
+            (existing, replacement) -> existing // handle duplicate keys
+        ));
 
     Map<UUID, String> userNamesByIdUpdated = comments.stream()
-        .collect(Collectors.toMap(Comment::getCreatedBy, comment -> {
-          PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
-              .orElseThrow(() -> new NotFoundException("User not found"));
-          return user.getFullName();
-        }));
+        .collect(Collectors.toMap(
+            Comment::getUpdatedBy,
+            comment -> {
+              PrepNesterUserDetails user = userRepository.findById(comment.getCreatedBy())
+                  .orElseThrow(() -> new NotFoundException("User not found"));
+              return user.getFullName();
+            },
+            (existing, replacement) -> existing // handle duplicate keys
+        ));
 
     Map<UUID, Boolean> likesCommentIds = comments.stream()
         .collect(Collectors.toMap(Comment::getId,

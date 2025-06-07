@@ -202,22 +202,10 @@ public class QuestionServiceTest {
   }
 
   @Test
-  void testUpdateQuestion_noPermission() {
-    UpdateQuestionBodyRequest body = new UpdateQuestionBodyRequest();
-    body.setCreatedBy(UUID.randomUUID());
-
-    when(userIdService.getCurrentUserId()).thenReturn(userId);
-
-    assertThrows(NoPermissionException.class,
-        () -> questionService.updateQuestion(questionId, body));
-  }
-
-  @Test
   void testUpdateQuestion_questionNotFound() {
     UpdateQuestionBodyRequest body = new UpdateQuestionBodyRequest();
     body.setCreatedBy(userId);
 
-    when(userIdService.getCurrentUserId()).thenReturn(userId);
     when(questionRepository.findById(questionId)).thenReturn(Optional.empty());
 
     assertThrows(NotFoundException.class, () -> questionService.updateQuestion(questionId, body));

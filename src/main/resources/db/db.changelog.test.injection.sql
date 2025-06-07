@@ -127,3 +127,8 @@ VALUES ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b',
        ('1e52f3b1-b2cf-470d-8338-bdbba6988e7b', '784bfa2b-6fc4-4288-a8ae-0579c4cc0b17'),
        ('e36fdba0-f12d-4a51-83a9-60e37452a831',
         '9345ef2f-cd8f-4eae-97cc-6f4e81ed995d');
+
+
+--- my bad due to assuming that this work would be perspective
+-- mentioned functional non functional requirements
+-- use words for use case diagram on presentation

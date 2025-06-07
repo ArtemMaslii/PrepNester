@@ -38,7 +38,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
         .compact();
 
-    String redirectUrl = "http://localhost:3000/prepnester/oauth2?token=" + token;
+    String redirectUrl =
+        "http://localhost:3000/prepnester/oauth2?token=" + token + "&email=" + email;
     response.sendRedirect(redirectUrl);
   }
 }
