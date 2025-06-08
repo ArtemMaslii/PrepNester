@@ -22,3 +22,11 @@ Then run the application with:
 
 docker-compose up --build -d
 ```
+It should be enough for local setup, if you want to access deployed application via postman: here's root path - 16.171.28.194:8080/api/v1/ then you should get credentials: 
+16.171.28.194:8080/api/v1/auth/login
+body: {
+    "email": "alice@example.com",
+    "password": "password_hash1"
+}
+After that access token is returned which you can use to get requests like:
+16.171.28.194:8080/api/v1/questions?sortBy=MOST_LIKED
