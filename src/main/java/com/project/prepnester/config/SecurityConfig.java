@@ -2,10 +2,8 @@ package com.project.prepnester.config;
 
 import com.project.prepnester.util.jwt.JwtAuthenticationEntryPoint;
 import com.project.prepnester.util.jwt.JwtAuthenticationFilter;
-import java.util.Arrays;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,9 +29,6 @@ public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
   private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
-  @Value("${spring.graphql.cors.allowed-origins}")
-  private String[] allowedOrigins;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -61,7 +56,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+    configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://13.60.17.163:3000"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);

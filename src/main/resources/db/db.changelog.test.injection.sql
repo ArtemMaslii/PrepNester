@@ -17,7 +17,6 @@ INSERT INTO role (id, access_type)
 VALUES ('3ba02c1a-7cc4-4a2b-8d85-19394d8f7a32', 'CANDIDATE'),
        ('e11f5c72-0f8a-47b0-bb7a-72b52238a41d', 'ADMIN');
 
-
 -- User Role
 -- changeset testdata:5
 INSERT INTO user_roles (user_id, role_id)
