@@ -15,6 +15,7 @@ import com.project.prepnester.model.content.Category;
 import com.project.prepnester.model.content.Comment;
 import com.project.prepnester.model.content.Question;
 import com.project.prepnester.model.content.SubQuestion;
+import com.project.prepnester.model.userDetails.AccessType;
 import com.project.prepnester.model.userDetails.PrepNesterUserDetails;
 import com.project.prepnester.repository.CategoryRepository;
 import com.project.prepnester.repository.CommentRepository;
@@ -236,10 +237,15 @@ public class QuestionService {
     Question question = questionRepository.findById(questionId)
         .orElseThrow(() -> new NotFoundException("Question not found"));
 
-    String createdBy = userRepository.findById(question.getCreatedBy())
+    PrepNesterUserDetails createdByUser = userRepository.findById(question.getCreatedBy())
         .orElseThrow(
-            () -> new NotFoundException("User with id " + question.getCreatedBy() + " not found"))
-        .getFullName();
+            () -> new NotFoundException("User with id " + question.getCreatedBy() + " not found"));
+
+    if (!userIdService.getCurrentUserId().equals(question.getCreatedBy()) || createdByUser.getRole()
+        .getAccessType().equals(
+            AccessType.ADMIN)) {
+      throw new NoPermissionException("User doesn't have permission to update this question");
+    }
 
     String updatedBy = null;
 
@@ -283,7 +289,7 @@ public class QuestionService {
             comment -> likeRepository.existsByCommentIdAndUserId(comment.getId(),
                 userIdService.getCurrentUserId())));
 
-    return mapQuestionDetailsToDto(question, createdBy, updatedBy,
+    return mapQuestionDetailsToDto(question, createdByUser.getFullName(), updatedBy,
         commentRepository.findAllByQuestionId(questionId), userNamesByIdCreated,
         userNamesByIdUpdated,
         likeRepository.findAllByQuestionId(
