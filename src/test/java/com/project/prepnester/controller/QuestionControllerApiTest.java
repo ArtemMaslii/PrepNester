@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @AutoConfigureMockMvc
-class QuestionControllerApiTest extends BaseTest {
+class QuestionIntegrationTest extends BaseTest {
 
   @Autowired
   private MockMvc mockMvc;

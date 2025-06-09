@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @AutoConfigureMockMvc
-class UserDetailsApiTest extends BaseTest {
+class UserDetailsIntegrationTest extends BaseTest {
 
   @Autowired
   private MockMvc mockMvc;
