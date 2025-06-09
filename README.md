@@ -64,3 +64,4 @@ and body:
     "createdBy": "db50f01e-2a8d-4be4-ae60-d9ad89fc4b72"
 }
 ```
+For more paths, please reference to the code in controller module
